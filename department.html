@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список отделов</title>
+</head>
+<body>
+<h1>Список отделов</h1>
+
+<p><a href="/create-department.html">Добавить отдел</a></p>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Наименование</th>
+        <th>Менеджер</th>
+    </tr>
+    </thead>
+    <tbody id="departmentTableBody">
+    </tbody>
+</table>
+
+<script>
+    function fetchEmployees() {
+        fetch("/departments")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка загрузки отделов");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.getElementById("departmentTableBody");
+                tableBody.innerHTML = "";
+
+                data.forEach(department => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+            <td>${department.id}</td>
+            <td>${department.name}</td>
+            <td>${department.managerId !== null ? department.managerId : '—'}</td>
+          `;
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+            });
+    }
+
+    window.onload = fetchEmployees;
+</script>
+</body>
+</html>
