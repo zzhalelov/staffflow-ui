@@ -5,15 +5,16 @@
     <title>Список отделов</title>
 </head>
 <body>
+
 <h1>Список отделов</h1>
 
 <p><a href="/create-department.html">Добавить отдел</a></p>
-<table>
+
+<table border="1" cellpadding="5">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Наименование</th>
-        <th>Менеджер</th>
+        <th>Название отдела</th>
+        <th>ID Менеджера</th>
     </tr>
     </thead>
     <tbody id="departmentTableBody">
@@ -21,8 +22,8 @@
 </table>
 
 <script>
-    function fetchEmployees() {
-        fetch("/departments")
+    function fetchDepartments() {
+        fetch("/departments/api")
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Ошибка загрузки отделов");
@@ -31,26 +32,27 @@
             })
             .then(data => {
                 const tableBody = document.getElementById("departmentTableBody");
-                tableBody.innerHTML = "";
+                tableBody.innerHTML = ""; // очистка таблицы перед обновлением
 
                 data.forEach(department => {
                     const row = document.createElement("tr");
 
                     row.innerHTML = `
-            <td>${department.id}</td>
-            <td>${department.name}</td>
-            <td>${department.managerId !== null ? department.managerId : '—'}</td>
-          `;
+                        <td>${department.name}</td>
+                        <td>${department.managerId !== null ? department.managerId : "Не назначен"}</td>
+                    `;
 
                     tableBody.appendChild(row);
                 });
             })
             .catch(error => {
                 console.error("Ошибка:", error);
+                document.getElementById("departmentTableBody").innerHTML = `<tr><td colspan="2">Ошибка загрузки данных</td></tr>`;
             });
     }
 
-    window.onload = fetchEmployees;
+    window.onload = fetchDepartments;
 </script>
+
 </body>
 </html>
