@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список должностей</title>
+</head>
+<body>
+<h1>Список должностей</h1>
+
+<p><a href="/create-position.html">Добавить должность</a></p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Оклад</th>
+    </tr>
+    </thead>
+    <tbody id="positionTableBody">
+    </tbody>
+</table>
+
+<script>
+    function fetchPositions() {
+        fetch("/positions/api")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка загрузки должностей");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.getElementById("positionTableBody");
+                tableBody.innerHTML = "";
+
+                data.forEach(position => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${position.id}</td>
+                        <td>${position.name}</td>
+                        <td>${position.salary()}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+            });
+    }
+
+    window.onload = fetchPositions;
+</script>
+
+</body>
+</html>
