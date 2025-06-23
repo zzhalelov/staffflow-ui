@@ -30,6 +30,12 @@
     <label>Сотовый телефон:</label><br>
     <input type="text" id="phone" required><br><br>
 
+    <label>Домашний адрес:</label><br>
+    <input type="text" id="address" required><br><br>
+
+    <label>Гражданство:</label><br>
+    <input type="text" id="citizenship" required><br><br>
+
     <button type="submit">Создать сотрудника</button>
 </form>
 
@@ -45,10 +51,12 @@
             iin: document.getElementById("iin").value,
             gender: document.getElementById("gender").value,
             email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value
+            phone: document.getElementById("phone").value,
+            address: document.getElementById("address").value,
+            citizenship: document.getElementById("citizenship").value
         };
 
-        fetch("employees/create", {
+        fetch("employees/api", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
