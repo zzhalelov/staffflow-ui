@@ -1,58 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Список отделов</title>
+  <meta charset="UTF-8">
+  <title>Список отделов</title>
 </head>
 <body>
 
-<h1>Список отделов</h1>
+<h1>Подразделения</h1>
+<nav>
+  <ul>
+    <li>
+      <a href="department-list.html">Список подразделений</a>
+    </li>
+    <li>
+      <a href="department-create.html">Добавить подразделение</a>
+    </li>
+  </ul>
+</nav>
 
-<p><a href="/create-department.html">Добавить отдел</a></p>
-
-<table border="1" cellpadding="5">
-    <thead>
-    <tr>
-        <th>Название отдела</th>
-        <th>ID Менеджера</th>
-    </tr>
-    </thead>
-    <tbody id="departmentTableBody">
-    </tbody>
-</table>
-
-<script>
-    function fetchDepartments() {
-        fetch("/departments/api")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Ошибка загрузки отделов");
-                }
-                return response.json();
-            })
-            .then(data => {
-                const tableBody = document.getElementById("departmentTableBody");
-                tableBody.innerHTML = ""; // очистка таблицы перед обновлением
-
-                data.forEach(department => {
-                    const row = document.createElement("tr");
-
-                    row.innerHTML = `
-                        <td>${department.name}</td>
-                        <td>${department.managerId !== null ? department.managerId : "Не назначен"}</td>
-                    `;
-
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => {
-                console.error("Ошибка:", error);
-                document.getElementById("departmentTableBody").innerHTML = `<tr><td colspan="2">Ошибка загрузки данных</td></tr>`;
-            });
-    }
-
-    window.onload = fetchDepartments;
-</script>
+<a href="index.html">Вернуться на главную страницу</a>
 
 </body>
 </html>

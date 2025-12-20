@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h1>Создание карточки организации</h1>
+
+<form method="post">
+  <label for="idNumber">БИН организации</label>
+  <input type="text" id="idNumber" name="idNumber" placeholder="Введите 12значный БИН"><br>
+
+  <label for="fullName">Полное наименование</label>
+  <input type="text" id="fullName" name="fullName" placeholder="Введите полное наименование"><br>
+
+  <label for="shortName">Краткое наименование</label>
+  <input type="text" id="shortName" name="shortName" placeholder="Введите краткое наименование"><br>
+
+  <label for="address">Адрес организации</label>
+  <input type="text" id="address" name="address" placeholder="Введите адрес"><br>
+
+  <label>Тип</label>
+  <select name="" id="">
+    <option value="legalPerson">Юридическое лицо</option>
+    <option value="personEntrepreneur">Индивидуальный предприниматель</option>
+  </select><br>
+
+  <label for="hasBranches">Имеются филиалы?</label>
+  <input type="checkbox" id="hasBranches" name="hasBranches"><br>
+
+  <label for="isBranch">Является филиалом?</label>
+  <input type="checkbox" id="isBranch" name="isBranch"><br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<a href="index.html">Вернуться на Главную страницу</a>
+</body>
+</html>
