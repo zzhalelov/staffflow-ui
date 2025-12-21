@@ -343,7 +343,7 @@
           <a href="employee.html">Сотрудники</a>
         </li>
         <li>
-          <a href="org.html">Организации</a>
+          <a href="organization.html">Организации</a>
         </li>
         <li>
           <a href="department.html">Подразделения</a>
@@ -377,4 +377,31 @@
 </div>
 
 </body>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+
+    // Время в формате HH:MM:SS
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}`;
+
+    // Дата в формате ДД.ММ.ГГГГ
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const dateString = `${day}.${month}.${year}`;
+
+    // Обновляем элементы
+    document.querySelector('.clock-time').textContent = timeString;
+    document.querySelector('.clock-date').textContent = dateString;
+  }
+
+  // Обновляем сразу при загрузке
+  updateClock();
+
+  // Обновляем каждую секунду
+  setInterval(updateClock, 1000);
+</script>
 </html>
