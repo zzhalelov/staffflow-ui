@@ -15,15 +15,139 @@
   <style>
     body {
       font-family: "Press Start 2P", "Courier New", monospace;
-      background-color: #ffffff;
-      color: #0f0;
+      background-color: #327375;
+      color: #fff;
       padding: 20px;
+    }
+
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background-color: silver;
+      border-top: 2px solid;
+      border-bottom: 2px solid #808080;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px;
+      z-index: 1000;
+      box-shadow: 0 -2px 4px #0003;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .taskbar-left {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .start-button {
+      background: silver;
+      color: #000;
+      border: 2px outset #C0C0C0;
+      padding: 6px 24px;
+      font-family: "Perfect DOS VGA 437", "Press Start 2P", monospace;
+      font-size: 18px;
+      cursor: pointer;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset -1px -1px gray, inset 1px 1px #fff, 2px 2px 4px #0000004d;
+      min-width: 100px;
+    }
+
+    .taskbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-right: 8px;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .taskbar-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      background-color: #c0c0c0cc;
+      border: 1px inset #C0C0C0;
+      border-radius: 2px;
+      height: 36px;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+    }
+
+    .clock {
+      font-family: "Perfect DOS VGA 437", "Press Start 2P", monospace;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-width: 50px;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .clock-time {
+      font-size: 14px;
+      line-height: 1.2;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .clock-date {
+      font-size: 10px;
+      line-height: 1;
+      margin-top: 2px;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
     }
   </style>
 </head>
 
 <body>
-<h1>Навигация</h1>
+<h1>Staffflow</h1>
 <nav aria-label="Table of Contents">
   <ul role="list">
     <li>
@@ -40,6 +164,21 @@
     </li>
   </ul>
 </nav>
-</body>
 
+<div class="taskbar">
+  <div class="taskbar-left">
+    <div>
+      <button type="button" class="start-button"><span>Пуск</span></button>
+    </div>
+  </div>
+  <div class="taskbar-right">
+    <div class="taskbar-info">
+      <div class="clock">
+        <div class="clock-time"></div>
+        <div class="clock-date"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
 </html>
