@@ -18,6 +18,19 @@
       background-color: #327375;
       color: #fff;
       padding: 20px;
+      cursor: url(https://qomp.club/assets/images/cursor.svg), auto;
+    }
+
+    .desktop {
+      min-height: 100vh;
+      background-color: #327375;
+      padding: 20px 20px 50px;
+      position: relative;
+      border: none;
+      outline: none;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
     }
 
     .taskbar {
@@ -143,42 +156,225 @@
       border-style: solid;
       border-color: #e5e7eb;
     }
+
+    .recycle-bin-icon {
+      position: fixed;
+      bottom: 80px;
+      right: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      width: 100px;
+      transition: background-color .2s;
+      pointer-events: auto;
+      z-index: 10;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .icon-image {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .icon-label {
+      font-size: 10px;
+      color: #fff;
+      text-align: center;
+      max-width: 100px;
+      word-break: break-word;
+      background-color: transparent;
+      padding: 2px 4px;
+      border: none;
+      line-height: 1.2;
+      text-shadow: 1px 1px 0 #000000;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      vertical-align: middle;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .desktop-icons {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: calc(100% - 40px);
+      height: calc(100vh - 40px);
+      overflow: visible;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      pointer-events: none;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .desktop-icon-about-system {
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      width: 130px;
+      transition: background-color .2s;
+      pointer-events: auto;
+      position: absolute;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    .desktop-icon-system {
+      top: 20px;
+      left: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      width: 130px;
+      transition: background-color .2s;
+      pointer-events: auto;
+      position: absolute;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+    }
+
+    .desktop-icon-settings {
+      top: 20px;
+      left: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      width: 130px;
+      transition: background-color .2s;
+      pointer-events: auto;
+      position: absolute;
+      margin: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+    }
+
+    .desktop-navigation {
+      top: 20px;
+      left: 260px;
+      display: flex;
+      flex-direction: column;
+      margin-top: 150px;
+    }
   </style>
 </head>
 
 <body>
-<h1>Staffflow</h1>
-<nav aria-label="Table of Contents">
-  <ul role="list">
-    <li>
-      <a>Главная страница</a>
-    </li>
-    <li>
-      <a href="employee.html">Сотрудники</a>
-    </li>
-    <li>
-      <a href="org.html">Организации</a>
-    </li>
-    <li>
-      <a href="department.html">Подразделения</a>
-    </li>
-  </ul>
-</nav>
-
-<div class="taskbar">
-  <div class="taskbar-left">
-    <div>
-      <button type="button" class="start-button"><span>Пуск</span></button>
+<div class="desktop">
+  <div class="desktop-icons">
+    <div class="desktop-icon desktop-icon-about-system">
+      <div class="icon-image"><img src="https://qomp.club/assets/images/listen-it.png" alt="О системе"></div>
+      <div class="icon-label">О системе</div>
+    </div>
+    <div class="desktop-icon desktop-icon-system">
+      <div class="icon-image"><img src="https://qomp.club/assets/images/quizzes.png" alt="Система"></div>
+      <div class="icon-label">Система</div>
+    </div>
+    <div class="desktop-icon desktop-icon-settings">
+      <div class="icon-image"><img src="https://qomp.club/assets/images/settings.png" alt="Настройки"></div>
+      <div class="icon-label">Настройки</div>
     </div>
   </div>
-  <div class="taskbar-right">
-    <div class="taskbar-info">
-      <div class="clock">
-        <div class="clock-time"></div>
-        <div class="clock-date"></div>
+
+  <div class="desktop-navigation">
+    <nav aria-label="Table of Contents">
+      <ul role="list">
+        <li>
+          <a>Главная страница</a>
+        </li>
+        <li>
+          <a href="employee.html">Сотрудники</a>
+        </li>
+        <li>
+          <a href="org.html">Организации</a>
+        </li>
+        <li>
+          <a href="department.html">Подразделения</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="recycle-bin-icon">
+    <div class="icon-image">
+      <img src="https://qomp.club/assets/images/bin.png" alt="Корзина">
+    </div>
+    <div class="icon-label">Корзина</div>
+  </div>
+
+  <div class="taskbar">
+    <div class="taskbar-left">
+      <div>
+        <button type="button" class="start-button"><span>Пуск</span></button>
+      </div>
+    </div>
+    <div class="taskbar-right">
+      <div class="taskbar-info">
+        <div class="clock">
+          <div class="clock-time"></div>
+          <div class="clock-date"></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 </body>
 </html>
