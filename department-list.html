@@ -22,7 +22,14 @@
 </head>
 <body>
 <h1>Список Подразделений</h1>
-<a href="department-create.html">[ ДОБАВТЬБ НОВОЕ ПОДРАЗДЕЛЕНИЕ ]</a>
+<a href="department-create.html">[ ДОБАВИТЬ НОВОЕ ПОДРАЗДЕЛЕНИЕ ]</a>
+
+<div class="search-container">
+  <label for="searchInput">Поиск по id</label>
+  <input type="number" id="searchInput" placeholder="Введите id подразделения">
+  <button onclick="searchDepartment()">[ НАЙТИ ]</button>
+  <button class="clear-btn" onclick="clearSearch()">[ ОЧИСТИТЬ ]</button>
+</div>
 
 <div id="message"></div>
 
@@ -48,8 +55,9 @@
 
 <script>
   const API_URL = '/api/departments';
-
   // const API_URL = 'http://localhost:8081/api/departments';
+
+  let allDepartments = [];
 
   async function loadDepartments() {
     const tbody = document.getElementById('departmentTableBody');
@@ -63,28 +71,10 @@
       }
 
       const data = await response.json();
+      allDepartments = data;
 
-      tbody.innerHTML = '';
-
-      if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3">Нет данных</td></tr>';
-        return;
-      }
-
-      data.forEach((dept) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${dept.id}</td>
-            <td>${dept.name}</td>
-            <td>
-            <div class="actions">
-            <button onclick="editDepartment(${dept.id})" title="Редактировать">[ EDIT ]</button>
-            <button class="delete" onclick="deleteDepartment(${dept.id}, '${dept.name}')" title="Удалить">[ DELETE ]</button>
-            </div>
-        </td>
-        `;
-        tbody.appendChild(row);
-      });
+      // Отображаем все данные
+      displayDepartments(data);
     } catch (error) {
       console.error('Ошибка при загрузке данных:', error);
       tbody.innerHTML = '<tr><td colspan="2" class="error">Ошибка загрузки данных</td></tr>';
@@ -128,8 +118,71 @@
     }
   }
 
+  function displayDepartments(departments) {
+    const tbody = document.getElementById('departmentTableBody');
+    tbody.innerHTML = '';
+
+    if (departments.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3">Нет данных</td></tr>';
+      return;
+    }
+
+    departments.forEach((dept) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${dept.id}</td>
+        <td>${dept.name}</td>
+        <td>
+          <div class="actions">
+            <button onclick="editDepartment(${dept.id})" title="Редактировать">[ EDIT ]</button>
+            <button class="delete" onclick="deleteDepartment(${dept.id}, '${dept.name}')" title="Удалить">[ DELETE ]</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function searchDepartment() {
+    const searchInput = document.getElementById('searchInput');
+    const searchId = parseInt(searchInput.value);
+    const messageDiv = document.getElementById('message');
+
+    if (!searchId || isNaN(searchId)) {
+      messageDiv.innerHTML = '<div style="color: #f44336; padding: 10px; margin: 10px 0; border: 2px solid #f44336;">Пожалуйста, введите корректный ID</div>';
+      setTimeout(() => messageDiv.innerHTML = '', 2000);
+      return;
+    }
+
+    const filteredDepartments = allDepartments.filter(dept => dept.id === searchId);
+
+    if (filteredDepartments.length === 0) {
+      messageDiv.innerHTML = '<div style="color: #ff9800; padding: 10px; margin: 10px 0; border: 2px solid #ff9800;">Департамент с таким ID не найден</div>';
+      displayDepartments([]);
+    } else {
+      messageDiv.innerHTML = '';
+      displayDepartments(filteredDepartments);
+    }
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('message').innerHTML = '';
+    displayDepartments(allDepartments);
+  }
+
   // Загружаем данные при загрузке страницы
   window.addEventListener('DOMContentLoaded', loadDepartments);
+
+  // Поиск при нажатии Enter
+  document.addEventListener('DOMContentLoaded', () => {
+    loadDepartments();
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        searchDepartment();
+      }
+    });
+  });
 </script>
 
 </body>
