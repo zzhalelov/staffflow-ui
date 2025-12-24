@@ -1,84 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Добавить сотрудника</title>
+  <meta charset="UTF-8">
+  <title>Добавить сотрудника</title>
 </head>
 <body>
 <h1>Добавление сотрудника</h1>
 
+<div id="message"></div>
+
 <form id="employeeForm">
-    <label>Фамилия:</label><br>
-    <input type="text" id="lastName" required><br><br>
+  <label for="lastName">Фамилия:</label><br>
+  <input type="text" id="lastName" name="lastName" placeholder="Фамилия"><br><br>
 
-    <label>Имя:</label><br>
-    <input type="text" id="firstName" required><br><br>
+  <label for="firstName">Имя:</label><br>
+  <input type="text" id="firstName" name="firstName" placeholder="Имя"><br><br>
 
-    <label>ИИН:</label><br>
-    <input type="text" id="iin" required><br><br>
+  <label for="iin">ИИН:</label><br>
+  <input type="text" id="iin" name="iin" placeholder="ИИН"><br><br>
 
-    <label>Пол:</label><br>
-    <select id="gender" required>
-        <option value="">Выберите пол</option>
-        <option value="Мужской">Мужской</option>
-        <option value="Женский">Женский</option>
-    </select><br><br>
+  <label for="gender">Пол:</label><br>
+  <select id="gender" name="gender" required>
+    <option value="">Выберите пол</option>
+    <option value="MALE">Мужской</option>
+    <option value="FEMALE">Женский</option>
+  </select><br><br>
 
-    <label>Почта:</label><br>
-    <input type="email" id="email" required><br><br>
+  <label for="email">Почта:</label><br>
+  <input type="email" id="email" name="email" placeholder="Почта"><br><br>
 
-    <label>Сотовый телефон:</label><br>
-    <input type="text" id="phone" required><br><br>
+  <label for="phone">Сотовый телефон:</label><br>
+  <input type="text" id="phone" name="phone" placeholder="Телефон"><br><br>
 
-    <label>Домашний адрес:</label><br>
-    <input type="text" id="address" required><br><br>
+  <label for="address">Домашний адрес:</label><br>
+  <input type="text" id="address" name="address" placeholder="Адрес"><br><br>
 
-    <label>Гражданство:</label><br>
-    <input type="text" id="citizenship" required><br><br>
+  <label for="citizenship">Гражданство:</label><br>
+  <input type="text" id="citizenship" name="citizenship" placeholder="Гражданство"><br><br>
 
-    <button type="submit">Создать сотрудника</button>
+  <button type="submit" id="submitBtn">[ Создать сотрудника ]</button>
 </form>
 
-<div id="result"></div>
+<a href="employee-list">[ НАЗАД К СПИСКУ ]</a>
+<br>
+<a href="index.html">[ ГЛАВНАЯ ]</a>
 
 <script>
-    document.getElementById("employeeForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+  const API_URL = "http://localhost:8081/api/employees";
 
-        const employeeData = {
-            firstName: document.getElementById("firstName").value,
-            lastName: document.getElementById("lastName").value,
-            iin: document.getElementById("iin").value,
-            gender: document.getElementById("gender").value,
-            email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value,
-            address: document.getElementById("address").value,
-            citizenship: document.getElementById("citizenship").value
-        };
+  const form = document.getElementById('employeeForm');
+  const messageDiv = document.getElementById('message');
+  const submitBtn = document.getElementById('submitBtn');
 
-        fetch("http://localhost:8080/api/employees", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(employeeData)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("Ошибка при создании сотрудника");
-                }
-            })
-            .then(data => {
-                document.getElementById("result").innerText = "Сотрудник успешно создан!";
-                document.getElementById("employeeForm").reset();
-            })
-            .catch(error => {
-                document.getElementById("result").innerText = error.message;
-            });
-    });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const inputLastName = document.getElementById('lastName');
+    const lastName = inputLastName.value.trim();
+
+    if (!lastName) {
+      showMessage('Введите фамилию', 'error');
+      return;
+    }
+
+    const inputFirstName = document.getElementById('firstName');
+    const firstName = inputFirstName.value.trim();
+
+    if (!firstName) {
+      showMessage('Введите имя', 'error');
+      return;
+    }
+
+    const inputIin = document.getElementById('iin');
+    const iin = inputIin.value.trim();
+
+    if (!iin) {
+      showMessage('Введите ИИН', 'error');
+      return;
+    }
+
+    const inputGender = document.getElementById('gender');
+    const gender = inputGender.value.trim();
+
+    if (!gender) {
+      showMessage('Выберите пол', 'error');
+      return;
+    }
+
+    const inputEmail = document.getElementById('email');
+    const email = inputEmail.value.trim();
+
+    if (!email) {
+      showMessage('Введите email', 'error');
+      return;
+    }
+
+    const inputPhone = document.getElementById('phone');
+    const phone = inputPhone.value.trim();
+
+    if (!phone) {
+      showMessage('Введите телефон', 'error');
+      return;
+    }
+
+    const inputAddress = document.getElementById('address');
+    const address = inputAddress.value.trim();
+
+    if (!address) {
+      showMessage('Введите адрес', 'error');
+      return;
+    }
+
+    const inputCitizenship = document.getElementById('citizenship');
+    const citizenship = inputCitizenship.value.trim();
+
+    if (!citizenship) {
+      showMessage('Введите гражданство', 'error');
+      return;
+    }
+
+    // Отключаем кнопку во время отправки
+    submitBtn.disabled = true;
+    submitBtn.textContent = '[ ОТПРАВКА... ]';
+
+    try {
+      // Формируем правильный объект для отправки
+      const employeeData = {
+        lastName: lastName,
+        firstName: firstName,
+        iin: iin,
+        gender: gender,
+        email: email,
+        phone: phone,
+        address: address,
+        citizenship: citizenship
+      };
+
+      console.log('Отправляем данные:', employeeData);
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(employeeData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Ответ сервера:', errorText);
+        throw new Error(`Ошибка: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Ответ сервера:', data);
+
+      showMessage('Сотрудник успешно создан!', 'success');
+
+      // Через 1 секунду перенаправляем на список
+      setTimeout(() => {
+        window.location.href = 'employee-list.html';
+      }, 1000);
+    } catch (error) {
+      console.error('Ошибка при создании сотрудника:', error);
+      showMessage(`Ошибка: ${error.message}`, 'error');
+
+      // Включаем кнопку обратно
+      submitBtn.disabled = false;
+      submitBtn.textContent = '[ СОЗДАТЬ СОТРУДНИКА ]';
+    }
+  });
+
+  function showMessage(text, type) {
+    messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+  }
 </script>
-
 </body>
 </html>

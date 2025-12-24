@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактировать сотрудника</title>
+</head>
+<body>
+<h1>РЕДАКТИРОВАНИЕ СОТРУДНИКА</h1>
+
+<div id="message"></div>
+<div id="loadingDiv" class="loading">Загрузка данных...</div>
+
+<form id="employeeForm" style="display: none;">
+  <label for="lastName">Фамилия:</label>
+  <input type="text" id="lastName" name="lastName" placeholder="Введите фамилию" required>
+
+  <label for="firstName">Имя:</label>
+  <input type="text" id="firstName" name="firstName" placeholder="Введите имя" required>
+
+  <label for="iin">ИИН:</label>
+  <input type="text" id="iin" name="iin" placeholder="Введите ИИН" required>
+
+  <label for="gender">Пол:</label>
+  <select id="gender" name="gender" required>
+    <option value="">Выберите пол</option>
+    <option value="MALE">Мужской</option>
+    <option value="FEMALE">Женский</option>
+  </select><br><br>
+
+  <label for="email">Почта:</label>
+  <input type="text" id="email" name="email" placeholder="Введите почту" required>
+
+  <label for="phone">Сотовый телефон:</label>
+  <input type="text" id="phone" name="phone" placeholder="Введите сотовый телефон" required>
+
+  <label for="address">Домашний адрес:</label>
+  <input type="text" id="address" name="address" placeholder="Введите адрес" required>
+
+  <label for="citizenship">Гражданство:</label>
+  <input type="text" id="citizenship" name="citizenship" placeholder="Введите гражданство" required>
+
+  <button type="submit" id="submitBtn">[ СОХРАНИТЬ ]</button>
+</form>
+
+<a href="employee.html">[ НАЗАД К СПИСКУ ]</a>
+<br>
+<a href="index.html">[ ГЛАВНАЯ ]</a>
+
+<script>
+  const API_URL = 'http://localhost:8081/api/employees';
+  // const API_URL = 'http://localhost:8081/api/employees';
+
+  // Получаем ID из URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const employeeId = urlParams.get('id');
+
+  const form = document.getElementById('employeeForm');
+  const messageDiv = document.getElementById('message');
+  const submitBtn = document.getElementById('submitBtn');
+  const loadingDiv = document.getElementById('loadingDiv');
+
+  if (!employeeId) {
+    messageDiv.innerHTML = '<div class="error">ID сотрудника не указан</div>';
+    loadingDiv.style.display = 'none';
+  } else {
+    loadEmployee();
+  }
+
+  // Функция загрузки данных сотрудника
+  async function loadEmployee() {
+    try {
+      console.log('Загружаем сотрудника с ID:', employeeId);
+
+      const response = await fetch(`${API_URL}/${employeeId}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const employee = await response.json();
+      console.log('Загружен сотрудник:', employee);
+
+      // Заполняем форму данными
+      document.getElementById('lastName').value = employee.lastName || '';
+      document.getElementById('firstName').value = employee.firstName || '';
+      document.getElementById('iin').value = employee.iin || '';
+      document.getElementById('gender').value = employee.gender || '';
+      document.getElementById('email').value = employee.email || '';
+      document.getElementById('phone').value = employee.phone || '';
+      document.getElementById('address').value = employee.address || '';
+      document.getElementById('citizenship').value = employee.citizenship || '';
+
+      // Показываем форму
+      loadingDiv.style.display = 'none';
+      form.style.display = 'block';
+
+    } catch (error) {
+      console.error('Ошибка при загрузке данных:', error);
+      loadingDiv.style.display = 'none';
+      messageDiv.innerHTML = `<div class="error">Ошибка загрузки: ${error.message}</div>`;
+    }
+  }
+
+  // Обработка отправки формы
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Собираем данные из формы
+    const formData = {
+      lastName: document.getElementById('lastName').value.trim(),
+      firstName: document.getElementById('firstName').value.trim(),
+      iin: document.getElementById('iin').value.trim(),
+      gender: document.getElementById('gender').value,
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      address: document.getElementById('address').value.trim(),
+      citizenship: document.getElementById('citizenship').value.trim()
+    };
+
+    // Валидация
+    if (!formData.firstName || !formData.lastName || !formData.iin) {
+      showMessage('Заполните все обязательные поля', 'error');
+      return;
+    }
+
+    // Валидация ИИН
+    if (!/^\d{12}$/.test(formData.iin)) {
+      showMessage('ИИН должен состоять из 12 цифр', 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Сохранение...';
+
+    try {
+      console.log('Обновляем сотрудника:', formData);
+
+      const response = await fetch(`${API_URL}/${employeeId}`, {
+        method: 'PATCH',  // или PUT, в зависимости от вашего API
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Ответ сервера:', errorText);
+        throw new Error(`Ошибка: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Сотрудник обновлен:', data);
+
+      showMessage('Сотрудник успешно обновлен!', 'success');
+
+      // Перенаправляем на список через 1 секунду
+      setTimeout(() => {
+        window.location.href = 'employee-list.html';
+      }, 1000);
+
+    } catch (error) {
+      console.error('Ошибка при обновлении сотрудника:', error);
+      showMessage(`Ошибка: ${error.message}`, 'error');
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Сохранить';
+    }
+  });
+
+  function showMessage(text, type) {
+    messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+  }
+</script>
+</body>
+</html>
