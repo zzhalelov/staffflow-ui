@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html lang="ru">
 
 <head>
   <meta charset="utf-8">
@@ -10,15 +10,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <meta name="description" content="">
-
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+    }
+
     body {
       font-family: "Press Start 2P", "Courier New", monospace;
       background-color: #327375;
       color: #fff;
-      padding: 20px;
       cursor: url(https://qomp.club/assets/images/cursor.svg), auto;
+      overflow: hidden;
     }
 
     .desktop {
@@ -26,13 +31,9 @@
       background-color: #327375;
       padding: 20px 20px 50px;
       position: relative;
-      border: none;
-      outline: none;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
     }
 
+    /* Taskbar */
     .taskbar {
       position: fixed;
       bottom: 0;
@@ -40,34 +41,19 @@
       right: 0;
       height: 48px;
       background-color: silver;
-      border-top: 2px solid;
-      border-bottom: 2px solid #808080;
+      border-top: 2px solid white;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 4px;
       z-index: 1000;
-      box-shadow: 0 -2px 4px #0003;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .taskbar-left {
       display: flex;
       align-items: center;
       gap: 4px;
-      position: relative;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
     .start-button {
@@ -75,15 +61,19 @@
       color: #000;
       border: 2px outset #C0C0C0;
       padding: 6px 24px;
-      font-family: "Perfect DOS VGA 437", "Press Start 2P", monospace;
-      font-size: 18px;
+      font-family: "Press Start 2P", monospace;
+      font-size: 14px;
       cursor: pointer;
       height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset -1px -1px gray, inset 1px 1px #fff, 2px 2px 4px #0000004d;
+      box-shadow: inset -1px -1px gray, inset 1px 1px #fff;
       min-width: 100px;
+    }
+
+    .start-button:active {
+      border-style: inset;
     }
 
     .taskbar-right {
@@ -91,13 +81,6 @@
       align-items: center;
       gap: 12px;
       padding-right: 8px;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
     .taskbar-info {
@@ -105,58 +88,80 @@
       align-items: center;
       gap: 8px;
       padding: 4px 8px;
-      background-color: #c0c0c0cc;
+      background-color: rgba(192, 192, 192, 0.8);
       border: 1px inset #C0C0C0;
-      border-radius: 2px;
       height: 36px;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
     }
 
     .clock {
-      font-family: "Perfect DOS VGA 437", "Press Start 2P", monospace;
+      font-family: "Press Start 2P", monospace;
       color: #000;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
       min-width: 50px;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
     .clock-time {
-      font-size: 14px;
+      font-size: 12px;
       line-height: 1.2;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
     .clock-date {
-      font-size: 10px;
+      font-size: 9px;
       line-height: 1;
       margin-top: 2px;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
+    /* Desktop Icons */
+    .desktop-icons {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .desktop-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      width: 100px;
+      transition: background-color 0.2s;
+    }
+
+    .desktop-icon:hover {
+      background-color: rgba(0, 0, 128, 0.3);
+    }
+
+    .icon-image {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-image img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .icon-label {
+      font-size: 10px;
+      color: #fff;
+      text-align: center;
+      word-break: break-word;
+      text-shadow: 1px 1px 0 #000000;
+    }
+
+    /* Recycle Bin */
     .recycle-bin-icon {
       position: fixed;
       bottom: 80px;
@@ -169,189 +174,213 @@
       cursor: pointer;
       user-select: none;
       width: 100px;
-      transition: background-color .2s;
-      pointer-events: auto;
       z-index: 10;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
-    .icon-image {
+    /* Modal Window */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 500;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    .modal-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 900px;
+      max-width: 90vw;
+      height: 600px;
+      max-height: 80vh;
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      flex-direction: column;
+    }
+
+    .modal-window.active {
+      display: flex;
+    }
+
+    .window-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: white;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 32px;
+      cursor: move;
+    }
+
+    .window-title {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .window-title img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .window-button {
+      width: 24px;
+      height: 24px;
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    .window-button:active {
+      border-style: inset;
+    }
+
+    .window-button.close {
+      background-color: #c0c0c0;
+    }
+
+    .window-content {
+      flex: 1;
+      background-color: #fff;
+      padding: 20px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 30px;
+      align-content: start;
+    }
+
+    .folder-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+
+    .folder-icon:hover {
+      background-color: #000080;
+    }
+
+    .folder-icon:hover .folder-label {
+      color: #fff;
+    }
+
+    .folder-image {
       width: 64px;
       height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
-    .icon-label {
-      font-size: 10px;
-      color: #fff;
-      text-align: center;
-      max-width: 100px;
-      word-break: break-word;
-      background-color: transparent;
-      padding: 2px 4px;
-      border: none;
-      line-height: 1.2;
-      text-shadow: 1px 1px 0 #000000;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-    }
-
-    img {
+    .folder-image img {
       max-width: 100%;
       height: auto;
-      display: block;
-      vertical-align: middle;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
     }
 
-    .desktop-icons {
+    .folder-label {
+      font-size: 11px;
+      color: #000;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    /* About Modal */
+    .about-modal {
+      display: none;
       position: fixed;
-      top: 20px;
-      left: 20px;
-      width: calc(100% - 40px);
-      height: calc(100vh - 40px);
-      overflow: visible;
-      display: flex;
-      flex-direction: column;
-      z-index: 10;
-      pointer-events: none;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1001;
     }
 
-    .desktop-icon-about-system {
-      top: 20px;
-      left: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      cursor: pointer;
-      user-select: none;
-      width: 130px;
-      transition: background-color .2s;
-      pointer-events: auto;
-      position: absolute;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-      border-width: 0;
-      border-style: solid;
-      border-color: #e5e7eb;
+    .about-modal.active {
+      display: block;
     }
 
-    .desktop-icon-system {
-      top: 20px;
-      left: 140px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      cursor: pointer;
-      user-select: none;
-      width: 130px;
-      transition: background-color .2s;
-      pointer-events: auto;
-      position: absolute;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
+    .about-content {
+      padding: 30px;
+      text-align: center;
     }
 
-    .desktop-icon-settings {
-      top: 20px;
-      left: 260px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      cursor: pointer;
-      user-select: none;
-      width: 130px;
-      transition: background-color .2s;
-      pointer-events: auto;
-      position: absolute;
-      margin: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
+    .about-content h2 {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #000;
     }
 
-    .desktop-navigation {
-      top: 20px;
-      left: 260px;
-      display: flex;
-      flex-direction: column;
-      margin-top: 150px;
+    .about-content p {
+      font-size: 10px;
+      margin-bottom: 10px;
+      color: #000;
+      line-height: 1.6;
     }
   </style>
 </head>
 
 <body>
 <div class="desktop">
+  <!-- Desktop Icons -->
   <div class="desktop-icons">
-    <div class="desktop-icon desktop-icon-about-system">
-      <div class="icon-image"><img src="https://qomp.club/assets/images/listen-it.png" alt="О системе"></div>
+    <div class="desktop-icon" onclick="openAboutModal()">
+      <div class="icon-image">
+        <img src="https://qomp.club/assets/images/listen-it.png" alt="О системе">
+      </div>
       <div class="icon-label">О системе</div>
     </div>
-    <div class="desktop-icon desktop-icon-system">
-      <div class="icon-image"><img src="https://qomp.club/assets/images/quizzes.png" alt="Система"></div>
+
+    <div class="desktop-icon" onclick="openSystemModal()">
+      <div class="icon-image">
+        <img src="https://qomp.club/assets/images/quizzes.png" alt="Система">
+      </div>
       <div class="icon-label">Система</div>
     </div>
-    <div class="desktop-icon desktop-icon-settings">
-      <div class="icon-image"><img src="https://qomp.club/assets/images/settings.png" alt="Настройки"></div>
+
+    <div class="desktop-icon" onclick="alert('Настройки в разработке')">
+      <div class="icon-image">
+        <img src="https://qomp.club/assets/images/settings.png" alt="Настройки">
+      </div>
       <div class="icon-label">Настройки</div>
     </div>
   </div>
 
-  <div class="desktop-navigation">
-    <nav aria-label="Table of Contents">
-      <ul role="list">
-        <li>
-          <a>Главная страница</a>
-        </li>
-        <li>
-          <a href="employee.html">Сотрудники</a>
-        </li>
-        <li>
-          <a href="organization.html">Организации</a>
-        </li>
-        <li>
-          <a href="department.html">Подразделения</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-
+  <!-- Recycle Bin -->
   <div class="recycle-bin-icon">
     <div class="icon-image">
       <img src="https://qomp.club/assets/images/bin.png" alt="Корзина">
@@ -359,11 +388,12 @@
     <div class="icon-label">Корзина</div>
   </div>
 
+  <!-- Taskbar -->
   <div class="taskbar">
     <div class="taskbar-left">
-      <div>
-        <button type="button" class="start-button"><span>Пуск</span></button>
-      </div>
+      <button type="button" class="start-button">
+        <span>Пуск</span>
+      </button>
     </div>
     <div class="taskbar-right">
       <div class="taskbar-info">
@@ -376,32 +406,190 @@
   </div>
 </div>
 
-</body>
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeAboutModal()"></div>
+
+<!-- System Modal Window -->
+<div class="modal-window" id="systemModal">
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="https://qomp.club/assets/images/quizzes.png" alt="">
+      <span>C:\Система</span>
+    </div>
+    <div class="window-controls">
+      <div class="window-button" onclick="closeSystemModal()">
+        <span style="font-size: 14px;">×</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="window-content">
+    <a href="employee.html" class="folder-icon">
+      <div class="folder-image">
+        <img src="https://qomp.club/assets/images/quizzes.png" alt="Сотрудники">
+      </div>
+      <div class="folder-label">Сотрудники</div>
+    </a>
+
+    <a href="organization.html" class="folder-icon">
+      <div class="folder-image">
+        <img src="https://qomp.club/assets/images/quizzes.png" alt="Организации">
+      </div>
+      <div class="folder-label">Организации</div>
+    </a>
+
+    <a href="department.html" class="folder-icon">
+      <div class="folder-image">
+        <img src="https://qomp.club/assets/images/quizzes.png" alt="Подразделения">
+      </div>
+      <div class="folder-label">Подразделения</div>
+    </a>
+
+    <a href="position.html" class="folder-icon">
+      <div class="folder-image">
+        <img src="https://qomp.club/assets/images/quizzes.png" alt="Должности">
+      </div>
+      <div class="folder-label">Должности</div>
+    </a>
+
+    <a href="#" class="folder-icon">
+      <div class="folder-image">
+        <img src="https://qomp.club/assets/images/quizzes.png" alt="Отчеты">
+      </div>
+      <div class="folder-label">Отчеты</div>
+    </a>
+
+    <a href="#" class="folder-icon">
+      <div class="folder-image">
+        <img src="https://qomp.club/assets/images/quizzes.png" alt="Документы">
+      </div>
+      <div class="folder-label">Документы</div>
+    </a>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div class="about-modal" id="aboutModal">
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="https://qomp.club/assets/images/listen-it.png" alt="" style="width: 20px;">
+      <span>О системе</span>
+    </div>
+    <div class="window-controls">
+      <div class="window-button close" onclick="closeAboutModal()">
+        <span style="font-size: 14px;">×</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-content">
+    <h2>STAFFFLOW SYSTEM</h2>
+    <p>Версия 1.0.0</p>
+    <p>© 2025 StaffFlow Systems</p>
+    <p style="margin-top: 20px;">
+      Система управления персоналом<br>
+      и организационной структурой
+    </p>
+    <p style="margin-top: 20px; font-size: 9px;">
+      Разработано с использованием<br>
+      Spring Boot и чистого JavaScript
+    </p>
+  </div>
+</div>
 
 <script>
+  // Clock
   function updateClock() {
     const now = new Date();
-
-    // Время в формате HH:MM:SS
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const timeString = `${hours}:${minutes}`;
 
-    // Дата в формате ДД.ММ.ГГГГ
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const year = now.getFullYear();
     const dateString = `${day}.${month}.${year}`;
 
-    // Обновляем элементы
     document.querySelector('.clock-time').textContent = timeString;
     document.querySelector('.clock-date').textContent = dateString;
   }
 
-  // Обновляем сразу при загрузке
   updateClock();
-
-  // Обновляем каждую секунду
   setInterval(updateClock, 1000);
+
+  // Modal Functions
+  function openSystemModal() {
+    document.getElementById('systemModal').classList.add('active');
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  function closeSystemModal() {
+    document.getElementById('systemModal').classList.remove('active');
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+
+  function openAboutModal() {
+    document.getElementById('aboutModal').classList.add('active');
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  function closeAboutModal() {
+    document.getElementById('aboutModal').classList.remove('active');
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+
+  // Close modals on Escape key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeSystemModal();
+      closeAboutModal();
+    }
+  });
+
+  // Draggable window (optional enhancement)
+  let isDragging = false;
+  let currentX;
+  let currentY;
+  let initialX;
+  let initialY;
+  let xOffset = 0;
+  let yOffset = 0;
+
+  const titlebar = document.querySelector('.window-titlebar');
+  const modal = document.getElementById('systemModal');
+
+  if (titlebar && modal) {
+    titlebar.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
+  }
+
+  function dragStart(e) {
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+
+    if (e.target === titlebar || titlebar.contains(e.target)) {
+      isDragging = true;
+    }
+  }
+
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+      xOffset = currentX;
+      yOffset = currentY;
+
+      modal.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px))`;
+    }
+  }
+
+  function dragEnd(e) {
+    initialX = currentX;
+    initialY = currentY;
+    isDragging = false;
+  }
 </script>
+</body>
 </html>
