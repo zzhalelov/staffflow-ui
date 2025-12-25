@@ -24,6 +24,13 @@
 <h1>Список сотрудников</h1>
 <a href="employee-create.html">[ ДОБАВИТЬ НОВОГО СОТРУДНИКА ]</a>
 
+<div class="search-container">
+  <label for="searchInput">Поиск по id</label>
+  <input type="number" id="searchInput" placeholder="Введите id сотрудника">
+  <button onclick="searchEmployee()">[ НАЙТИ ]</button>
+  <button class="clear-btn" onclick="clearSearch()">[ ОЧИСТИТЬ ]</button>
+</div>
+
 <div id="message"></div>
 
 <table>
