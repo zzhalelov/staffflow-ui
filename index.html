@@ -161,6 +161,64 @@
       text-shadow: 1px 1px 0 #000000;
     }
 
+    /* Start Menu */
+    .start-menu {
+      display: none;
+      position: fixed;
+      bottom: 48px;
+      left: 4px;
+      width: 250px;
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .start-menu.active {
+      display: block;
+    }
+
+    .start-menu-header {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: white;
+      padding: 8px 12px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .start-menu-items {
+      padding: 4px 0;
+    }
+
+    .start-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 11px;
+      color: #000;
+      transition: background-color 0.1s;
+    }
+
+    .start-menu-item:hover {
+      background-color: #000080;
+      color: #fff;
+    }
+
+    .start-menu-item img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .start-menu-separator {
+      height: 2px;
+      background-color: #808080;
+      margin: 4px 8px;
+    }
+
     /* Recycle Bin */
     .recycle-bin-icon {
       position: fixed;
@@ -351,6 +409,27 @@
       color: #000;
       line-height: 1.6;
     }
+
+    .staffflow-watermark {
+      position: fixed;
+      left: 10px;
+      bottom: 58px; /* чуть выше taskbar */
+      width: 15vw;
+      max-width: 15%;
+      opacity: 0.18;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .staffflow-logo-text {
+      color: #00ffcc;
+      text-shadow: 0 0 6px rgba(0, 255, 204, 0.6);
+      font-family: "Press Start 2P", monospace;
+      font-size: clamp(32px, 2.5vw, 32px);
+      letter-spacing: 2px;
+      line-height: 1.2;
+      user-select: none;
+    }
   </style>
 </head>
 
@@ -402,6 +481,33 @@
           <div class="clock-date"></div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Start Menu -->
+<div class="start-menu" id="startMenu">
+  <div class="start-menu-header">
+    <img src="https://win98icons.alexmeub.com/icons/png/windows_update-3.png" alt="" width="24">
+    <span>StaffFlow</span>
+  </div>
+  <div class="start-menu-items">
+    <div class="start-menu-item" onclick="openAboutModal(); closeStartMenu();">
+      <img src="https://qomp.club/assets/images/listen-it.png" alt="">
+      <span>О системе</span>
+    </div>
+    <div class="start-menu-item" onclick="openSystemModal(); closeStartMenu();">
+      <img src="https://qomp.club/assets/images/quizzes.png" alt="">
+      <span>Система</span>
+    </div>
+    <div class="start-menu-item" onclick="alert('Настройки в разработке'); closeStartMenu();">
+      <img src="https://qomp.club/assets/images/settings.png" alt="">
+      <span>Настройки</span>
+    </div>
+    <div class="start-menu-separator"></div>
+    <div class="start-menu-item" onclick="if(confirm('Выйти из системы?')) window.location.reload();">
+      <img src="https://win98icons.alexmeub.com/icons/png/key_win-0.png" alt="">
+      <span>Выход</span>
     </div>
   </div>
 </div>
@@ -488,13 +594,19 @@
     <p>© 2025 StaffFlow Systems</p>
     <p style="margin-top: 20px;">
       Система управления персоналом<br>
-      и организационной структурой
+      и начисления заработной платы
     </p>
     <p style="margin-top: 20px; font-size: 9px;">
       Разработано с использованием<br>
-      Spring Boot и чистого JavaScript
+      Spring Framework и чистого JavaScript
     </p>
   </div>
+</div>
+
+<div class="staffflow-watermark">
+  <span class="staffflow-logo-text">
+  STAFF<br>FLOW
+</span>
 </div>
 
 <script>
@@ -537,6 +649,23 @@
     document.getElementById('aboutModal').classList.remove('active');
     document.getElementById('modalOverlay').classList.remove('active');
   }
+
+  const startButton = document.querySelector('.start-button');
+  const startMenu = document.getElementById('startMenu');
+
+  startButton.addEventListener('click', () => {
+    startMenu.classList.toggle('active');
+  });
+
+  function closeStartMenu() {
+    startMenu.classList.remove('active');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!startMenu.contains(e.target) && !startButton.contains(e.target)) {
+      startMenu.classList.remove('active');
+    }
+  });
 
   // Close modals on Escape key
   document.addEventListener('keydown', function (e) {
