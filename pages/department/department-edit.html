@@ -258,7 +258,7 @@
         <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" alt="" width="20">
         <span>Редактировать подразделение</span>
       </div>
-      <div class="window-button" onclick="window.location.href='/pages/department/department-list.html'">×</div>
+      <div class="window-button" onclick="window.location.href='department-list.html'">×</div>
     </div>
 
     <!-- Content -->
@@ -274,7 +274,7 @@
 
         <div class="button-container">
           <button type="submit" id="submitBtn">💾 Сохранить</button>
-          <a href="/pages/department/department-list.html" class="back-link">❌ Отмена</a>
+          <a href="department-list.html" class="back-link">❌ Отмена</a>
         </div>
       </form>
     </div>
@@ -389,7 +389,7 @@
       showMessage('✅ Подразделение успешно обновлено!', 'success');
 
       setTimeout(() => {
-        window.location.href = '/pages/department/department-list.html';
+        window.location.href = 'department-list.html';
       }, 1000);
 
     } catch (error) {
