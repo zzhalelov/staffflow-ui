@@ -346,14 +346,14 @@
   updateClock();
   setInterval(updateClock, 1000);
 
-  if (!departmentId) {
+  if (!organizationId) {
     messageDiv.innerHTML = '<div class="message error">❌ ID организации не указан</div>';
     loadingDiv.style.display = 'none';
   } else {
     loadOrganization();
   }
 
-  // Load department data
+  // Load organization data
   async function loadOrganization() {
     try {
       console.log('Загружаем организацию с ID:', organizationId);
@@ -438,7 +438,7 @@
       showMessage('✅ Организация успешно обновлена!', 'success');
 
       setTimeout(() => {
-        window.location.href = 'department-list.html';
+        window.location.href = 'organization-list.html';
       }, 1000);
 
     } catch (error) {
