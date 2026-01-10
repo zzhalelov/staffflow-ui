@@ -251,7 +251,7 @@
         <img src="https://win98icons.alexmeub.com/icons/png/file_new-4.png" alt="" width="20">
         <span>Добавить подразделение</span>
       </div>
-      <div class="window-button" onclick="window.location.href='department-list.html'">×</div>
+      <div class="window-button" onclick="window.location.href='/pages/department/department-list.html'">×</div>
     </div>
 
     <!-- Content -->
@@ -266,7 +266,7 @@
 
         <div class="button-container">
           <button type="submit" id="submitBtn">💾 Создать</button>
-          <a href="department-list.html" class="back-link">❌ Отмена</a>
+          <a href="/pages/department/department-list.html" class="back-link">❌ Отмена</a>
         </div>
       </form>
     </div>
@@ -332,7 +332,7 @@
       showMessage('✅ Подразделение успешно создано!', 'success');
 
       setTimeout(() => {
-        window.location.href = 'department-list.html';
+        window.location.href = '/pages/department/department-list.html';
       }, 1000);
 
     } catch (error) {

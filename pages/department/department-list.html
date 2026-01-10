@@ -294,12 +294,12 @@
         <img src="https://win98icons.alexmeub.com/icons/png/users-4.png" alt="" width="20">
         <span>Список подразделений</span>
       </div>
-      <div class="window-button" onclick="window.location.href='department.html'">×</div>
+      <div class="window-button" onclick="window.location.href='/pages/department/department.html'">×</div>
     </div>
 
     <!-- Toolbar -->
     <div class="toolbar">
-      <a href="department-create.html" class="toolbar-button">➕ Добавить</a>
+      <a href="/pages/department/department-create.html" class="toolbar-button">➕ Добавить</a>
       <div class="search-container">
         <span style="font-size: 10px; color: #000;">Поиск ID:</span>
         <input type="number" id="searchInput" placeholder="ID">
@@ -428,7 +428,7 @@
   }
 
   function editDepartment(id) {
-    window.location.href = `department-edit.html?id=${id}`;
+    window.location.href = `/pages/department/department-edit.html?id=${id}`;
   }
 
   async function deleteDepartment(id, name) {
