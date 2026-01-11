@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Редактировать должность - StaffFlow</title>
+
+  <!-- Шрифт -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== БАЗОВЫЕ СТИЛИ ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+    }
+
+    body {
+      font-family: "Press Start 2P", monospace;
+      background-color: #327375;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .desktop {
+      min-height: 100vh;
+      padding: 20px 20px 50px;
+    }
+
+    .main-window {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 750px;
+      height: 85vh;
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .window-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: white;
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .window-content {
+      flex: 1;
+      background-color: #c0c0c0;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 10px;
+      color: #000;
+    }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 6px;
+      border: 2px inset #fff;
+      font-size: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 10px;
+    }
+
+    th, td {
+      border: 1px solid #808080;
+      padding: 6px;
+      color: #000;
+    }
+
+    th {
+      background-color: #c0c0c0;
+    }
+
+    .actions button {
+      font-size: 9px;
+      padding: 4px 6px;
+      cursor: pointer;
+    }
+
+    .delete {
+      background: #c00000;
+      color: #fff;
+    }
+
+    .button-container {
+      margin-top: 20px;
+      display: flex;
+      gap: 8px;
+      border-top: 2px solid #808080;
+      padding-top: 16px;
+    }
+
+    .message {
+      padding: 10px;
+      margin-bottom: 16px;
+      font-size: 10px;
+      border: 2px solid;
+    }
+
+    .error {
+      background: #fcc;
+      border-color: #f00;
+      color: #900;
+    }
+
+    .success {
+      background: #cfc;
+      border-color: #0a0;
+      color: #060;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 11px;
+      color: #000;
+    }
+  </style>
+</head>
+
+<body>
+<div class="desktop">
+  <div class="main-window">
+
+    <!-- ===== ЗАГОЛОВОК ===== -->
+    <div class="window-titlebar">
+      <span>Редактировать должность</span>
+      <button onclick="location.href='position-list.html'">×</button>
+    </div>
+
+    <!-- ===== КОНТЕНТ ===== -->
+    <div class="window-content">
+
+      <div id="message"></div>
+      <div id="loadingDiv" class="loading">⌛ Загрузка данных...</div>
+
+      <!-- ===== ФОРМА ===== -->
+      <form id="positionForm" style="display:none;">
+
+        <!-- Название должности -->
+        <div class="form-group">
+          <label for="name">Наименование должности *</label>
+          <input type="text" id="name" required>
+        </div>
+
+        <!-- ===== ТАБЛИЦА НАЧИСЛЕНИЙ ===== -->
+        <label>Начисления</label>
+
+        <table>
+          <thead>
+          <tr>
+            <th>Вид начисления</th>
+            <th>Сумма</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody id="scheduleTableBody"></tbody>
+        </table>
+
+        <!-- Добавление нового начисления -->
+        <div class="form-group">
+          <select id="earningTypeSelect"></select>
+          <input type="number" id="amountInput" placeholder="Сумма">
+          <button type="button" onclick="addScheduleItem()">➕ Добавить</button>
+        </div>
+
+        <!-- Кнопки -->
+        <div class="button-container">
+          <button type="submit" id="submitBtn">💾 Сохранить</button>
+          <a href="position-list.html">❌ Отмена</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ======================================================
+     API и состояние
+  ====================================================== */
+  const API_URL = '/api/positions';
+  const EARNING_API = '/api/earning-types';
+
+  const urlParams = new URLSearchParams(location.search);
+  const positionId = urlParams.get('id');
+
+  let scheduleItems = [];
+  let earningTypes = [];
+
+  /* ======================================================
+     Загрузка данных
+  ====================================================== */
+  async function loadPosition() {
+    const pos = await fetch(`${API_URL}/${positionId}`).then(r => r.json());
+    document.getElementById('name').value = pos.name;
+    scheduleItems = pos.scheduleItems || [];
+    renderScheduleTable();
+  }
+
+  async function loadEarningTypes() {
+    earningTypes = await fetch(EARNING_API).then(r => r.json());
+    const select = document.getElementById('earningTypeSelect');
+    select.innerHTML = '<option value="">— вид начисления —</option>';
+    earningTypes.forEach(e =>
+      select.innerHTML += `<option value="${e.id}">${e.name}</option>`
+    );
+  }
+
+  /* ======================================================
+     Работа с начислениями
+  ====================================================== */
+  function renderScheduleTable() {
+    const tbody = document.getElementById('scheduleTableBody');
+    tbody.innerHTML = '';
+
+    scheduleItems.forEach((item, index) => {
+      tbody.innerHTML += `
+      <tr>
+        <td>${item.earningTypeName}</td>
+        <td>${item.amount.toLocaleString('ru-RU')}</td>
+        <td>
+          <button class="delete" onclick="removeScheduleItem(${index})">🗑</button>
+        </td>
+      </tr>
+    `;
+    });
+  }
+
+  function addScheduleItem() {
+    const typeId = document.getElementById('earningTypeSelect').value;
+    const amount = Number(document.getElementById('amountInput').value);
+    if (!typeId || amount <= 0) return;
+
+    const et = earningTypes.find(e => e.id == typeId);
+
+    scheduleItems.push({
+      earningTypeId: et.id,
+      earningTypeName: et.name,
+      amount
+    });
+
+    renderScheduleTable();
+  }
+
+  function removeScheduleItem(index) {
+    scheduleItems.splice(index, 1);
+    renderScheduleTable();
+  }
+
+  /* ======================================================
+     Сохранение
+  ====================================================== */
+  document.getElementById('positionForm').addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const payload = {
+      name: document.getElementById('name').value.trim(),
+      scheduleItems
+    };
+
+    await fetch(`${API_URL}/${positionId}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    location.href = 'position-list.html';
+  });
+
+  /* ======================================================
+     Инициализация
+  ====================================================== */
+  (async () => {
+    await loadEarningTypes();
+    await loadPosition();
+    document.getElementById('loadingDiv').style.display = 'none';
+    document.getElementById('positionForm').style.display = 'block';
+  })();
+</script>
+</body>
+</html>
