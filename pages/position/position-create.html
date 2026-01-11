@@ -1,11 +1,278 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Добавить должность</title>
+  <meta charset="UTF-8">
+  <title>Добавить должность</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Шрифт в стиле Win98 -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    /* Общий стиль страницы */
+    body {
+      font-family: "Press Start 2P", monospace;
+      background: #327375;
+      padding: 20px;
+    }
+
+    /* Окно в стиле Windows 98 */
+    .window {
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    label {
+      font-size: 10px;
+      color: #000;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      border: 2px inset #fff;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 10px;
+    }
+
+    th, td {
+      border: 1px solid #808080;
+      padding: 6px;
+      background: #fff;
+      color: #000;
+    }
+
+    th {
+      background: #c0c0c0;
+      border: 2px outset #fff;
+    }
+
+    button {
+      background: silver;
+      border: 2px outset #fff;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-family: "Press Start 2P";
+      font-size: 10px;
+    }
+
+    button:active {
+      border-style: inset;
+    }
+
+    .error {
+      color: #900;
+      font-size: 10px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
+<div class="window">
+  <h3 style="font-size:12px;color:#000;">Добавить должность</h3>
+
+  <!-- Название должности -->
+  <label>Наименование должности *</label>
+  <input type="text" id="name" placeholder="Менеджер">
+
+  <hr>
+
+  <!-- Выбор вида начисления -->
+  <label>Вид начисления</label>
+  <select id="earningTypeSelect"></select>
+
+  <!-- Ввод суммы -->
+  <label>Сумма</label>
+  <input type="number" id="amount" min="0" step="100" placeholder="100000">
+
+  <!-- Кнопка добавления начисления -->
+  <button type="button" onclick="addItem()">➕ Добавить начисление</button>
+
+  <!-- Таблица начислений по должности -->
+  <table>
+    <thead>
+    <tr>
+      <th>Вид начисления</th>
+      <th>Сумма</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody id="itemsBody"></tbody>
+  </table>
+
+  <br>
+
+  <!-- Сохранение должности -->
+  <button onclick="submitForm()">💾 Сохранить должность</button>
+
+  <!-- Сообщения об ошибках -->
+  <div id="message" class="error"></div>
+</div>
+
+<script>
+  // ============================
+  // API endpoints
+  // ============================
+
+  const POSITIONS_API = '/api/positions';
+  const EARNING_TYPES_API = '/api/earning-types';
+
+  // ============================
+  // DOM элементы
+  // ============================
+
+  const earningTypeSelect = document.getElementById('earningTypeSelect');
+  const itemsBody = document.getElementById('itemsBody');
+  const message = document.getElementById('message');
+
+  // ============================
+  // Данные в памяти (state)
+  // ============================
+
+  // Все доступные виды начислений
+  let earningTypes = [];
+
+  // Начисления, привязанные к должности
+  // [{ earningTypeId, amount }]
+  let scheduledItems = [];
+
+  // ============================
+  // Загрузка видов начислений
+  // ============================
+
+  async function loadEarningTypes() {
+    const res = await fetch(EARNING_TYPES_API);
+    earningTypes = await res.json();
+
+    // Очищаем select и добавляем placeholder
+    earningTypeSelect.innerHTML = '<option value="">— выберите —</option>';
+
+    // Заполняем выпадающий список
+    earningTypes.forEach(et => {
+      const option = document.createElement('option');
+      option.value = et.id;            // ID пойдёт на backend
+      option.textContent = `${et.name} (${et.code})`;
+      earningTypeSelect.appendChild(option);
+    });
+  }
+
+  // ============================
+  // Добавление начисления
+  // ============================
+
+  function addItem() {
+    const typeId = Number(earningTypeSelect.value);
+    const amount = Number(document.getElementById('amount').value);
+
+    // Проверка ввода
+    if (!typeId || amount <= 0) {
+      message.textContent = 'Укажите вид начисления и сумму';
+      return;
+    }
+
+    // Запрещаем дубли видов начислений
+    if (scheduledItems.some(i => i.earningTypeId === typeId)) {
+      message.textContent = 'Этот вид начисления уже добавлен';
+      return;
+    }
+
+    // Добавляем начисление
+    scheduledItems.push({
+      earningTypeId: typeId,
+      amount: amount
+    });
+
+    renderItems();
+    message.textContent = '';
+  }
+
+  // ============================
+  // Отрисовка таблицы начислений
+  // ============================
+
+  function renderItems() {
+    itemsBody.innerHTML = '';
+
+    scheduledItems.forEach((item, index) => {
+      // Находим название начисления по id
+      const et = earningTypes.find(e => e.id === item.earningTypeId);
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${et.name}</td>
+        <td>${item.amount.toLocaleString('ru-RU')}</td>
+        <td>
+          <button onclick="removeItem(${index})">🗑</button>
+        </td>
+      `;
+
+      itemsBody.appendChild(tr);
+    });
+  }
+
+  // ============================
+  // Удаление начисления
+  // ============================
+
+  function removeItem(index) {
+    scheduledItems.splice(index, 1);
+    renderItems();
+  }
+
+  // ============================
+  // Отправка формы
+  // ============================
+
+  async function submitForm() {
+    const name = document.getElementById('name').value.trim();
+
+    // Проверка данных
+    if (!name || scheduledItems.length === 0) {
+      message.textContent = 'Заполните название и начисления';
+      return;
+    }
+
+    // Финальный payload под backend
+    const payload = {
+      name: name,
+      scheduledItems: scheduledItems
+    };
+
+    console.log('Отправка:', payload);
+
+    const res = await fetch(POSITIONS_API, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      message.textContent = 'Ошибка сохранения';
+      return;
+    }
+
+    alert('Должность создана');
+    window.location.href = 'position-list.html';
+  }
+
+  // ============================
+  // Инициализация страницы
+  // ============================
+
+  loadEarningTypes();
+</script>
 
 </body>
 </html>
