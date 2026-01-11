@@ -360,9 +360,9 @@
       // Fill form
       document.getElementById('name').value = earningType.name || '';
       document.getElementById('code').value = earningType.code || '';
-      document.getElementById('includeInFot').value = earningType.includeInFot || '';
-      document.getElementById('includeInAverageSalaryCalc').value = earningType.includeInAverageSalaryCalc || '';
-      document.getElementById('isIndexable').value = earningType.isIndexable || '';
+      document.getElementById('includeInFot').checked = earningType.includeInFot || '';
+      document.getElementById('includeInAverageSalaryCalc').checked = earningType.includeInAverageSalaryCalc || '';
+      document.getElementById('isIndexable').checked = earningType.isIndexable || '';
       document.getElementById('description').value = earningType.description || '';
 
       // Show form
@@ -402,7 +402,7 @@
       console.log('Обновляем вид начисления:', formData);
 
       const response = await fetch(`${API_URL}/${earningTypeId}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
