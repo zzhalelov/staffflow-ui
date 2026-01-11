@@ -242,13 +242,24 @@
       tbody.innerHTML += `
       <tr>
         <td>${item.earningTypeName}</td>
-        <td>${item.amount.toLocaleString('ru-RU')}</td>
         <td>
-          <button class="delete" onclick="removeScheduleItem(${index})">🗑</button>
+          <input type="number"
+                 value="${item.amount}"
+                 min="0"
+                 onchange="updateAmount(${index}, this.value)">
+        </td>
+        <td>
+          <button class="delete"
+                  type="button"
+                  onclick="removeScheduleItem(${index})">🗑</button>
         </td>
       </tr>
     `;
     });
+  }
+
+  function updateAmount(index, value) {
+    scheduleItems[index].amount = Number(value);
   }
 
   function addScheduleItem() {
@@ -284,7 +295,7 @@
     };
 
     await fetch(`${API_URL}/${positionId}`, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload)
     });
