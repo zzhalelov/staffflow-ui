@@ -2,16 +2,15 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <title>Редактировать должность</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Редактировать должность - StaffFlow</title>
 
-  <!-- Шрифт -->
+  <!-- Pixel font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
-    /* ===== БАЗОВЫЕ СТИЛИ ===== */
     * {
       margin: 0;
       padding: 0;
@@ -26,99 +25,168 @@
       overflow: hidden;
     }
 
+    /* Desktop */
     .desktop {
       min-height: 100vh;
       padding: 20px 20px 50px;
+      position: relative;
     }
 
+    /* Main window */
     .main-window {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 750px;
+      width: 95vw;
+      max-width: 1000px;
       height: 85vh;
       background-color: #c0c0c0;
       border: 2px outset #fff;
       display: flex;
       flex-direction: column;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, .5);
     }
 
+    /* Titlebar */
     .window-titlebar {
       background: linear-gradient(90deg, #000080, #1084d0);
       color: white;
-      padding: 6px 10px;
+      padding: 4px 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 32px;
+    }
+
+    .window-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-size: 12px;
     }
 
-    .window-content {
-      flex: 1;
+    .window-button {
+      width: 24px;
+      height: 24px;
       background-color: #c0c0c0;
-      overflow-y: auto;
-      padding: 20px;
+      border: 2px outset #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      font-family: Arial, sans-serif;
     }
 
-    .form-group {
-      margin-bottom: 16px;
+    .window-button:active {
+      border-style: inset;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      background-color: #c0c0c0;
+      border-bottom: 2px solid #808080;
+      padding: 8px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .toolbar-button {
+      background: silver;
+      color: #000;
+      border: 2px outset #C0C0C0;
+      padding: 6px 12px;
+      font-size: 10px;
+      cursor: pointer;
+      font-family: "Press Start 2P", monospace;
+      text-decoration: none;
+    }
+
+    .toolbar-button:active {
+      border-style: inset;
+    }
+
+    /* Content */
+    .window-content {
+      flex: 1;
+      background-color: #fff;
+      overflow: auto;
+      padding: 12px;
     }
 
     label {
-      display: block;
-      margin-bottom: 6px;
       font-size: 10px;
       color: #000;
     }
 
-    input[type="text"], input[type="number"], select {
+    input, select {
       width: 100%;
       padding: 6px;
+      margin: 6px 0 12px;
       border: 2px inset #fff;
-      font-size: 12px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
     }
 
+    button {
+      background: silver;
+      color: #000;
+      border: 2px outset #C0C0C0;
+      padding: 6px 12px;
+      font-size: 10px;
+      cursor: pointer;
+      font-family: "Press Start 2P", monospace;
+    }
+
+    button:active {
+      border-style: inset;
+    }
+
+    button.delete {
+      background: #c00000;
+      color: #fff;
+    }
+
+    /* Table */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
       font-size: 10px;
+      margin-top: 10px;
     }
 
-    th, td {
+    th {
+      background-color: #c0c0c0;
+      color: #000;
+      border: 2px outset #fff;
+      padding: 6px;
+    }
+
+    td {
       border: 1px solid #808080;
       padding: 6px;
       color: #000;
     }
 
-    th {
-      background-color: #c0c0c0;
+    tr:nth-child(even) {
+      background-color: #f0f0f0;
     }
 
-    .actions button {
-      font-size: 9px;
-      padding: 4px 6px;
-      cursor: pointer;
+    tr:hover {
+      background-color: #000080;
     }
 
-    .delete {
-      background: #c00000;
+    tr:hover td {
       color: #fff;
     }
 
-    .button-container {
-      margin-top: 20px;
-      display: flex;
-      gap: 8px;
-      border-top: 2px solid #808080;
-      padding-top: 16px;
-    }
-
     .message {
-      padding: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
       font-size: 10px;
+      padding: 8px;
       border: 2px solid;
     }
 
@@ -128,15 +196,9 @@
       color: #900;
     }
 
-    .success {
-      background: #cfc;
-      border-color: #0a0;
-      color: #060;
-    }
-
     .loading {
       text-align: center;
-      padding: 40px;
+      padding: 30px;
       font-size: 11px;
       color: #000;
     }
@@ -144,31 +206,38 @@
 </head>
 
 <body>
+
 <div class="desktop">
   <div class="main-window">
 
-    <!-- ===== ЗАГОЛОВОК ===== -->
+    <!-- Titlebar -->
     <div class="window-titlebar">
-      <span>Редактировать должность</span>
-      <button onclick="location.href='position-list.html'">×</button>
+      <div class="window-title">
+        <img src="https://win98icons.alexmeub.com/icons/png/briefcase-4.png" width="20">
+        <span>Редактировать должность</span>
+      </div>
+      <div class="window-button" onclick="location.href='position-list.html'">×</div>
     </div>
 
-    <!-- ===== КОНТЕНТ ===== -->
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <a href="position-list.html" class="toolbar-button">⬅ Назад</a>
+      <button class="toolbar-button" onclick="submitForm()">💾 Сохранить</button>
+    </div>
+
+    <!-- Content -->
     <div class="window-content">
 
       <div id="message"></div>
       <div id="loadingDiv" class="loading">⌛ Загрузка данных...</div>
 
-      <!-- ===== ФОРМА ===== -->
       <form id="positionForm" style="display:none;">
 
-        <!-- Название должности -->
-        <div class="form-group">
-          <label for="name">Наименование должности *</label>
-          <input type="text" id="name" required>
-        </div>
+        <label>Наименование должности *</label>
+        <input type="text" id="name" required>
 
-        <!-- ===== ТАБЛИЦА НАЧИСЛЕНИЙ ===== -->
+        <hr>
+
         <label>Начисления</label>
 
         <table>
@@ -182,39 +251,28 @@
           <tbody id="scheduleTableBody"></tbody>
         </table>
 
-        <!-- Добавление нового начисления -->
-        <div class="form-group">
-          <select id="earningTypeSelect"></select>
-          <input type="number" id="amountInput" placeholder="Сумма">
-          <button type="button" onclick="addScheduleItem()">➕ Добавить</button>
-        </div>
+        <hr>
 
-        <!-- Кнопки -->
-        <div class="button-container">
-          <button type="submit" id="submitBtn">💾 Сохранить</button>
-          <a href="position-list.html">❌ Отмена</a>
-        </div>
+        <select id="earningTypeSelect"></select>
+        <input type="number" id="amountInput" placeholder="Сумма">
+        <button type="button" onclick="addScheduleItem()">➕ Добавить начисление</button>
+
       </form>
+
     </div>
   </div>
 </div>
 
 <script>
-  /* ======================================================
-     API и состояние
-  ====================================================== */
   const API_URL = '/api/positions';
   const EARNING_API = '/api/earning-types';
 
-  const urlParams = new URLSearchParams(location.search);
-  const positionId = urlParams.get('id');
+  const params = new URLSearchParams(location.search);
+  const positionId = params.get('id');
 
   let scheduleItems = [];
   let earningTypes = [];
 
-  /* ======================================================
-     Загрузка данных
-  ====================================================== */
   async function loadPosition() {
     const pos = await fetch(`${API_URL}/${positionId}`).then(r => r.json());
     document.getElementById('name').value = pos.name;
@@ -231,35 +289,25 @@
     );
   }
 
-  /* ======================================================
-     Работа с начислениями
-  ====================================================== */
   function renderScheduleTable() {
     const tbody = document.getElementById('scheduleTableBody');
     tbody.innerHTML = '';
 
     scheduleItems.forEach((item, index) => {
       tbody.innerHTML += `
-      <tr>
-        <td>${item.earningTypeName}</td>
-        <td>
-          <input type="number"
-                 value="${item.amount}"
-                 min="0"
-                 onchange="updateAmount(${index}, this.value)">
-        </td>
-        <td>
-          <button class="delete"
-                  type="button"
-                  onclick="removeScheduleItem(${index})">🗑</button>
-        </td>
-      </tr>
-    `;
+        <tr>
+          <td>${item.earningTypeName}</td>
+          <td>
+            <input type="number" value="${item.amount}"
+                   onchange="scheduleItems[${index}].amount = Number(this.value)">
+          </td>
+          <td>
+            <button class="delete" type="button"
+                    onclick="removeScheduleItem(${index})">🗑 DEL</button>
+          </td>
+        </tr>
+      `;
     });
-  }
-
-  function updateAmount(index, value) {
-    scheduleItems[index].amount = Number(value);
   }
 
   function addScheduleItem() {
@@ -268,6 +316,7 @@
     if (!typeId || amount <= 0) return;
 
     const et = earningTypes.find(e => e.id == typeId);
+    if (scheduleItems.some(i => i.earningTypeId == typeId)) return;
 
     scheduleItems.push({
       earningTypeId: et.id,
@@ -283,12 +332,7 @@
     renderScheduleTable();
   }
 
-  /* ======================================================
-     Сохранение
-  ====================================================== */
-  document.getElementById('positionForm').addEventListener('submit', async e => {
-    e.preventDefault();
-
+  async function submitForm() {
     const payload = {
       name: document.getElementById('name').value.trim(),
       scheduleItems
@@ -301,11 +345,8 @@
     });
 
     location.href = 'position-list.html';
-  });
+  }
 
-  /* ======================================================
-     Инициализация
-  ====================================================== */
   (async () => {
     await loadEarningTypes();
     await loadPosition();
@@ -313,5 +354,6 @@
     document.getElementById('positionForm').style.display = 'block';
   })();
 </script>
+
 </body>
 </html>

@@ -5,24 +5,116 @@
   <title>Добавить должность</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Шрифт в стиле Win98 -->
+  <!-- Pixel-шрифт -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
-    /* Общий стиль страницы */
-    body {
-      font-family: "Press Start 2P", monospace;
-      background: #327375;
-      padding: 20px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
     }
 
-    /* Окно в стиле Windows 98 */
-    .window {
-      background: #c0c0c0;
+    body {
+      font-family: "Press Start 2P", monospace;
+      background-color: #327375;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Desktop */
+    .desktop {
+      min-height: 100vh;
+      padding: 20px 20px 50px;
+      position: relative;
+    }
+
+    /* Main window */
+    .main-window {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 95vw;
+      max-width: 1000px;
+      height: 85vh;
+      background-color: #c0c0c0;
       border: 2px outset #fff;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, .5);
+    }
+
+    /* Titlebar */
+    .window-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #fff;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 32px;
+    }
+
+    .window-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .window-button {
+      width: 24px;
+      height: 24px;
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    .window-button:active {
+      border-style: inset;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      background-color: #c0c0c0;
+      border-bottom: 2px solid #808080;
+      padding: 8px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .toolbar-button {
+      background: silver;
+      color: #000;
+      border: 2px outset #C0C0C0;
+      padding: 6px 12px;
+      font-size: 10px;
+      cursor: pointer;
+      font-family: "Press Start 2P", monospace;
+      text-decoration: none;
+    }
+
+    .toolbar-button:active {
+      border-style: inset;
+    }
+
+    /* Content */
+    .window-content {
+      flex: 1;
+      background-color: #fff;
+      overflow: auto;
+      padding: 12px;
     }
 
     label {
@@ -33,224 +125,204 @@
     input, select {
       width: 100%;
       padding: 6px;
-      margin-top: 4px;
+      margin: 6px 0 12px;
       border: 2px inset #fff;
-      font-family: monospace;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 10px;
-    }
-
-    th, td {
-      border: 1px solid #808080;
-      padding: 6px;
-      background: #fff;
-      color: #000;
-    }
-
-    th {
-      background: #c0c0c0;
-      border: 2px outset #fff;
+    hr {
+      margin: 12px 0;
     }
 
     button {
       background: silver;
-      border: 2px outset #fff;
+      color: #000;
+      border: 2px outset #C0C0C0;
       padding: 6px 12px;
-      cursor: pointer;
-      font-family: "Press Start 2P";
       font-size: 10px;
+      cursor: pointer;
+      font-family: "Press Start 2P", monospace;
     }
 
     button:active {
       border-style: inset;
     }
 
-    .error {
-      color: #900;
+    button.delete {
+      background: #c00000;
+      color: #fff;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 10px;
       margin-top: 10px;
+    }
+
+    th {
+      background-color: #c0c0c0;
+      color: #000;
+      border: 2px outset #fff;
+      padding: 6px;
+    }
+
+    td {
+      border: 1px solid #808080;
+      padding: 6px;
+      color: #000;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+
+    tr:hover {
+      background-color: #000080;
+    }
+
+    tr:hover td {
+      color: #fff;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 10px;
+      color: #900;
     }
   </style>
 </head>
 
 <body>
 
-<div class="window">
-  <h3 style="font-size:12px;color:#000;">Добавить должность</h3>
+<div class="desktop">
 
-  <!-- Название должности -->
-  <label>Наименование должности *</label>
-  <input type="text" id="name" placeholder="Менеджер">
+  <div class="main-window">
 
-  <hr>
+    <!-- Titlebar -->
+    <div class="window-titlebar">
+      <div class="window-title">
+        <img src="https://win98icons.alexmeub.com/icons/png/briefcase-4.png" width="20">
+        <span>Добавить должность</span>
+      </div>
+      <div class="window-button" onclick="location.href='position-list.html'">×</div>
+    </div>
 
-  <!-- Выбор вида начисления -->
-  <label>Вид начисления</label>
-  <select id="earningTypeSelect"></select>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <a href="position-list.html" class="toolbar-button">⬅ Назад</a>
+      <button class="toolbar-button" onclick="submitForm()">💾 Сохранить</button>
+    </div>
 
-  <!-- Ввод суммы -->
-  <label>Сумма</label>
-  <input type="number" id="amount" min="0" step="100" placeholder="100000">
+    <!-- Content -->
+    <div class="window-content">
 
-  <!-- Кнопка добавления начисления -->
-  <button type="button" onclick="addItem()">➕ Добавить начисление</button>
+      <label>Наименование должности *</label>
+      <input type="text" id="name" placeholder="Менеджер">
 
-  <!-- Таблица начислений по должности -->
-  <table>
-    <thead>
-    <tr>
-      <th>Вид начисления</th>
-      <th>Сумма</th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody id="itemsBody"></tbody>
-  </table>
+      <hr>
 
-  <br>
+      <label>Вид начисления</label>
+      <select id="earningTypeSelect"></select>
 
-  <!-- Сохранение должности -->
-  <button onclick="submitForm()">💾 Сохранить должность</button>
+      <label>Сумма</label>
+      <input type="number" id="amount" min="0" step="100" placeholder="100000">
 
-  <!-- Сообщения об ошибках -->
-  <div id="message" class="error"></div>
+      <button onclick="addItem()">➕ Добавить начисление</button>
+
+      <table>
+        <thead>
+        <tr>
+          <th>Вид начисления</th>
+          <th>Сумма</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+
+      <div id="message" class="message"></div>
+
+    </div>
+  </div>
 </div>
 
 <script>
-  // ============================
-  // API endpoints
-  // ============================
-
   const POSITIONS_API = '/api/positions';
   const EARNING_TYPES_API = '/api/earning-types';
-
-  // ============================
-  // DOM элементы
-  // ============================
 
   const earningTypeSelect = document.getElementById('earningTypeSelect');
   const itemsBody = document.getElementById('itemsBody');
   const message = document.getElementById('message');
 
-  // ============================
-  // Данные в памяти (state)
-  // ============================
-
-  // Все доступные виды начислений
   let earningTypes = [];
-
-  // Начисления, привязанные к должности
-  // [{ earningTypeId, amount }]
   let scheduledItems = [];
-
-  // ============================
-  // Загрузка видов начислений
-  // ============================
 
   async function loadEarningTypes() {
     const res = await fetch(EARNING_TYPES_API);
     earningTypes = await res.json();
 
-    // Очищаем select и добавляем placeholder
     earningTypeSelect.innerHTML = '<option value="">— выберите —</option>';
 
-    // Заполняем выпадающий список
     earningTypes.forEach(et => {
       const option = document.createElement('option');
-      option.value = et.id;            // ID пойдёт на backend
+      option.value = et.id;
       option.textContent = `${et.name} (${et.code})`;
       earningTypeSelect.appendChild(option);
     });
   }
 
-  // ============================
-  // Добавление начисления
-  // ============================
-
   function addItem() {
     const typeId = Number(earningTypeSelect.value);
     const amount = Number(document.getElementById('amount').value);
 
-    // Проверка ввода
     if (!typeId || amount <= 0) {
       message.textContent = 'Укажите вид начисления и сумму';
       return;
     }
 
-    // Запрещаем дубли видов начислений
     if (scheduledItems.some(i => i.earningTypeId === typeId)) {
       message.textContent = 'Этот вид начисления уже добавлен';
       return;
     }
 
-    // Добавляем начисление
-    scheduledItems.push({
-      earningTypeId: typeId,
-      amount: amount
-    });
-
+    scheduledItems.push({earningTypeId: typeId, amount});
     renderItems();
     message.textContent = '';
   }
-
-  // ============================
-  // Отрисовка таблицы начислений
-  // ============================
 
   function renderItems() {
     itemsBody.innerHTML = '';
 
     scheduledItems.forEach((item, index) => {
-      // Находим название начисления по id
       const et = earningTypes.find(e => e.id === item.earningTypeId);
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${et.name}</td>
         <td>${item.amount.toLocaleString('ru-RU')}</td>
-        <td>
-          <button onclick="removeItem(${index})">🗑</button>
-        </td>
+        <td><button class="delete" onclick="removeItem(${index})">🗑 DEL</button></td>
       `;
-
       itemsBody.appendChild(tr);
     });
   }
-
-  // ============================
-  // Удаление начисления
-  // ============================
 
   function removeItem(index) {
     scheduledItems.splice(index, 1);
     renderItems();
   }
 
-  // ============================
-  // Отправка формы
-  // ============================
-
   async function submitForm() {
     const name = document.getElementById('name').value.trim();
 
-    // Проверка данных
     if (!name || scheduledItems.length === 0) {
       message.textContent = 'Заполните название и начисления';
       return;
     }
 
-    // Финальный payload под backend
-    const payload = {
-      name: name,
-      scheduledItems: scheduledItems
-    };
-
-    console.log('Отправка:', payload);
+    const payload = {name, scheduledItems};
 
     const res = await fetch(POSITIONS_API, {
       method: 'POST',
@@ -264,12 +336,8 @@
     }
 
     alert('Должность создана');
-    window.location.href = 'position-list.html';
+    location.href = 'position-list.html';
   }
-
-  // ============================
-  // Инициализация страницы
-  // ============================
 
   loadEarningTypes();
 </script>
