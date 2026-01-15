@@ -1,0 +1,49 @@
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+  background-color: #fff;
+}
+
+th,
+td {
+  border: 1px solid #808080;
+  padding: 6px;
+  text-align: left;
+  color: #000;
+}
+
+th {
+  background-color: #c0c0c0;
+  border: 2px outset #fff;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+tr:hover {
+  background-color: #000080;
+}
+
+tr:hover td {
+  color: #fff;
+}
+
+/* ===== ACTIONS ===== */
+.actions {
+  display: flex;
+  gap: 4px;
+}
+
+.actions button {
+  padding: 3px 8px;
+  font-size: 9px;
+}
+
+.actions .delete {
+  background: #c00000;
+  color: #fff;
+}

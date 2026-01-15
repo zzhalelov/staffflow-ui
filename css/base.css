@@ -1,0 +1,98 @@
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  image-rendering: pixelated;
+}
+
+/* ===== BODY / DESKTOP ===== */
+body {
+  font-family: "Press Start 2P", "Courier New", monospace;
+  background-color: #327375;
+  color: #fff;
+  overflow: hidden;
+  cursor: url(https://qomp.club/assets/images/cursor.svg), auto;
+}
+
+.desktop {
+  min-height: 100vh;
+  padding: 20px 20px 50px;
+  position: relative;
+}
+
+/* ===== TEXT ===== */
+label {
+  font-size: 10px;
+  color: #000;
+}
+
+hr {
+  margin: 12px 0;
+}
+
+/* ===== INPUTS ===== */
+input,
+select {
+  width: 100%;
+  padding: 6px;
+  border: 2px inset #fff;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  background: #fff;
+}
+
+input:focus,
+select:focus {
+  outline: 1px dotted #000;
+}
+
+/* ===== BUTTONS ===== */
+button,
+.button {
+  background: silver;
+  color: #000;
+  border: 2px outset #C0C0C0;
+  padding: 6px 12px;
+  font-size: 10px;
+  cursor: pointer;
+  font-family: "Press Start 2P", monospace;
+}
+
+button:active,
+.button:active {
+  border-style: inset;
+}
+
+button.delete {
+  background: #c00000;
+  color: #fff;
+}
+
+/* ===== MESSAGES ===== */
+.message {
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 2px solid;
+  font-size: 10px;
+}
+
+.message.error {
+  background: #fcc;
+  border-color: #f00;
+  color: #900;
+}
+
+.message.success {
+  background: #cfc;
+  border-color: #0a0;
+  color: #060;
+}
+
+/* ===== LOADING ===== */
+.loading {
+  text-align: center;
+  padding: 30px;
+  font-size: 11px;
+  color: #000;
+}
