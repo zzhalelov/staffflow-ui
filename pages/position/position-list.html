@@ -47,6 +47,13 @@
       flex-direction: column;
     }
 
+    .window-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
     .window-titlebar {
       background: linear-gradient(90deg, #000080, #1084d0);
       color: white;
@@ -55,6 +62,25 @@
       justify-content: space-between;
       align-items: center;
       font-size: 12px;
+    }
+
+    .window-button {
+      width: 24px;
+      height: 24px;
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    .window-button:active {
+      border-style: inset;
     }
 
     .toolbar {
@@ -80,6 +106,21 @@
       background-color: #fff;
       overflow: auto;
       padding: 6px;
+    }
+
+    .search-container {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .search-container input {
+      padding: 4px 8px;
+      border: 2px inset #fff;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      width: 150px;
     }
 
     table {
@@ -117,9 +158,22 @@
     }
 
     .actions button {
+      background: silver;
+      color: #000;
+      border: 2px outset #C0C0C0;
+      padding: 3px 8px;
       font-size: 9px;
-      padding: 3px 6px;
       cursor: pointer;
+      font-family: "Press Start 2P", monospace;
+    }
+
+    .actions button:active {
+      border-style: inset;
+    }
+
+    .actions button.delete {
+      background: #c00000;
+      color: #fff;
     }
 
     .delete {
@@ -142,19 +196,22 @@
 
     <!-- Заголовок -->
     <div class="window-titlebar">
-      <span>Список должностей</span>
-      <button onclick="location.href='position.html'">×</button>
+      <div class="window-title">
+        <img src="https://win98icons.alexmeub.com/icons/png/briefcase-4.png" width="20">
+        <span>Список должностей</span>
+      </div>
+      <div class="window-button" onclick="location.href='position.html'">×</div>
     </div>
 
     <!-- Панель -->
     <div class="toolbar">
       <a href="position-create.html" class="toolbar-button">➕ Добавить</a>
 
-      <div style="margin-left:auto;">
-        ID:
-        <input type="number" id="searchInput" style="width:80px">
-        <button class="toolbar-button" onclick="searchPosition()">🔍</button>
-        <button class="toolbar-button" onclick="clearSearch()">✖</button>
+      <div class="search-container">
+        <span style="font-size: 10px; color: #000;">Поиск ID:</span>
+        <input type="number" id="searchInput" placeholder="ID">
+        <button class="toolbar-button" onclick="searchPosition()">🔍 Найти</button>
+        <button class="toolbar-button" onclick="clearSearch()">✖ Очистить</button>
       </div>
     </div>
 
@@ -260,8 +317,8 @@
   function actionsHtml(pos) {
     return `
     <div class="actions">
-      <button onclick="editPosition(${pos.id})">✏</button>
-      <button class="delete" onclick="deletePosition(${pos.id}, '${pos.name}')">🗑</button>
+        <button onclick="editPosition(${pos.id})">✏ EDIT</button>
+        <button class="delete" onclick="deletePosition(${pos.id}, '${pos.name}')">🗑 DEL</button>
     </div>
   `;
   }
