@@ -14,7 +14,6 @@
 </head>
 
 <body>
-
 <div class="main-window window-form">
 
   <!-- TITLEBAR -->
@@ -28,9 +27,7 @@
 
   <!-- CONTENT -->
   <div class="window-content">
-
     <form id="departmentForm">
-
       <div class="form-group">
         <label>Наименование *</label>
         <input id="name" name="name" required>
@@ -42,23 +39,32 @@
       </div>
 
     </form>
-
   </div>
-
 </div>
+
+<div id="toast-container"></div>
+
+<script src="/js/toast.js"></script>
 
 <script>
   const API_URL = '/api/departments';
-
   const form = document.getElementById('departmentForm');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    if (!name) return;
+    const nameInput = document.getElementById('name');
+    const name = nameInput.value.trim();
+
+    if (!name) {
+      toast.error('Введите наименование');
+      nameInput.focus();
+      return;
+    }
 
     try {
+      toast.info('Отправка данных...');
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -69,11 +75,15 @@
         throw new Error(response.status);
       }
 
-      window.location.href = 'department-list.html';
+      toast.success('Подразделение создано');
+
+      setTimeout(() => {
+        window.location.href = 'department-list.html';
+      }, 800);
 
     } catch (err) {
       console.error(err);
-      alert('Ошибка при создании подразделения');
+      toast.error('Ошибка при создании подразделения');
     }
   });
 </script>
