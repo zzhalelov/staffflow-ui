@@ -2,382 +2,150 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Добавить вид начисления - StaffFlow</title>
+  <title>Добавить вид начисления</title>
 
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  >
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-    }
-
-    body {
-      font-family: "Press Start 2P", "Courier New", monospace;
-      background-color: #327375;
-      color: #fff;
-      cursor: url(https://qomp.club/assets/images/cursor.svg), auto;
-      overflow: hidden;
-    }
-
-    .desktop {
-      min-height: 100vh;
-      background-color: #327375;
-      padding: 20px 20px 50px;
-      position: relative;
-    }
-
-    /* Taskbar */
-    .taskbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 48px;
-      background-color: silver;
-      border-top: 2px solid white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px;
-      z-index: 1000;
-    }
-
-    .start-button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 6px 24px;
-      font-size: 14px;
-      cursor: pointer;
-      height: 36px;
-    }
-
-    .clock {
-      font-family: "Press Start 2P", monospace;
-      color: #000;
-      font-size: 12px;
-      padding: 4px 8px;
-      background-color: rgba(192, 192, 192, 0.8);
-      border: 1px inset #C0C0C0;
-    }
-
-    /* Main Window */
-    .main-window {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      max-width: 90vw;
-      height: 85vh;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .window-titlebar {
-      background: linear-gradient(90deg, #000080, #1084d0);
-      color: white;
-      padding: 4px 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 32px;
-      cursor: move;
-    }
-
-    .window-title {
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .window-button {
-      width: 24px;
-      height: 24px;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000;
-      font-family: Arial, sans-serif;
-    }
-
-    /* Content */
-    .window-content {
-      flex: 1;
-      background-color: #c0c0c0;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 10px;
-      color: #000;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    select {
-      width: 100%;
-      padding: 6px;
-      border: 2px inset #fff;
-      font-family: "Courier New", monospace;
-      font-size: 12px;
-      background-color: #fff;
-    }
-
-    input:focus,
-    select:focus {
-      outline: 1px dotted #000;
-    }
-
-    .button-container {
-      display: flex;
-      gap: 8px;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 2px solid #808080;
-    }
-
-    button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 10px 20px;
-      font-family: "Press Start 2P", monospace;
-      font-size: 11px;
-      cursor: pointer;
-      min-width: 120px;
-    }
-
-    button:active {
-      border-style: inset;
-    }
-
-    button:disabled {
-      background: #808080;
-      color: #c0c0c0;
-      cursor: not-allowed;
-    }
-
-    .back-link {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 10px 20px;
-      font-family: "Press Start 2P", monospace;
-      font-size: 11px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .message {
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 2px solid;
-      font-size: 10px;
-    }
-
-    .error {
-      background-color: #fcc;
-      border-color: #f00;
-      color: #c00;
-    }
-
-    .success {
-      background-color: #cfc;
-      border-color: #0f0;
-      color: #060;
-    }
-
-    /* Back Button */
-    .back-button {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 100;
-      text-decoration: none;
-    }
-
-    .back-icon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      cursor: pointer;
-      width: 100px;
-    }
-
-    .back-icon:hover {
-      background-color: rgba(0, 0, 128, 0.3);
-    }
-
-    .icon-label {
-      font-size: 10px;
-      color: #fff;
-      text-shadow: 1px 1px 0 #000;
-    }
-  </style>
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
 </head>
 
 <body>
-<div class="desktop">
-  <!-- Main Window -->
-  <div class="main-window">
-    <div class="window-titlebar">
-      <div class="window-title">
-        <img src="https://win98icons.alexmeub.com/icons/png/file_new-4.png" alt="" width="20">
-        <span>Добавить вид начисления</span>
-      </div>
-      <div class="window-button" onclick="window.location.href='earning-type-list.html'">×</div>
+
+<div class="main-window window-form">
+
+  <!-- TITLEBAR -->
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="/icons/folder.png" alt="">
+      <span>Добавить вид начисления</span>
     </div>
-
-    <!-- Content -->
-    <div class="window-content">
-      <div id="message"></div>
-
-      <form id="earningTypeForm">
-        <div class="form-group">
-          <label for="name">Наименование *</label>
-          <input type="text" id="name" name="name" placeholder="Оклад по дням" required>
-        </div>
-
-        <div class="form-group">
-          <label for="code">Код *</label>
-          <input type="text" id="code" name="code" placeholder="ОКЛДН" required>
-        </div>
-
-        <div class="form-group">
-          <label for="includeInFot">Входит в ФОТ? *</label>
-          <input type="checkbox" id="includeInFot" name="includeInFot">
-        </div>
-
-        <div class="form-group">
-          <label for="includeInAverageSalaryCalc">Включается при расчете СРЗП? *</label>
-          <input type="checkbox" id="includeInAverageSalaryCalc" name="includeInAverageSalaryCalc">
-        </div>
-
-        <div class="form-group">
-          <label for="isIndexable">Индексируемый заработок? *</label>
-          <input type="checkbox" id="isIndexable" name="isIndexable">
-        </div>
-
-        <div class="form-group">
-          <label for="description">Описание *</label>
-          <input type="text" id="description" name="description" placeholder="Описание вида начисления" required>
-        </div>
-
-        <div class="button-container">
-          <button type="submit" id="submitBtn">💾 Создать</button>
-          <a href="earning-type-list.html" class="back-link">❌ Отмена</a>
-        </div>
-      </form>
+    <div
+      class="window-button"
+      onclick="location.href='earning-type-list.html'"
+    >×
     </div>
   </div>
 
-  <!-- Taskbar -->
-  <div class="taskbar">
-    <button class="start-button">Пуск</button>
-    <div class="clock" id="clock"></div>
+  <!-- CONTENT -->
+  <div class="window-content">
+
+    <form id="earningTypeForm">
+
+      <div class="form-group">
+        <label>Наименование *</label>
+        <input id="name" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Код *</label>
+        <input id="code" name="code" required>
+      </div>
+
+      <div class="form-group checkbox">
+        <label>
+          <input type="checkbox" id="includeInFot">
+          Включать в ФОТ
+        </label>
+      </div>
+
+      <div class="form-group checkbox">
+        <label>
+          <input type="checkbox" id="includeInAverageSalaryCalc">
+          Включать в средний заработок
+        </label>
+      </div>
+
+      <div class="form-group checkbox">
+        <label>
+          <input type="checkbox" id="isIndexable">
+          Индексируемый заработок
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Описание</label>
+        <textarea id="description"></textarea>
+      </div>
+
+      <div class="button-container">
+        <button type="submit">💾 Создать</button>
+        <a href="earning-type-list.html" class="button">❌ Отмена</a>
+      </div>
+
+    </form>
+
   </div>
 </div>
 
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Toast -->
+<script src="/js/ui-toast.js"></script>
+
+<!-- Page logic -->
 <script>
-  // const API_URL = "http://localhost:8081/api/earning-types";
   const API_URL = '/api/earning-types';
-
-  // Clock
-  function updateClock() {
-    const now = new Date();
-    const time = now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
-    const date = now.toLocaleDateString('ru-RU');
-    document.getElementById('clock').textContent = `${time} ${date}`;
-  }
-
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  // Form submission
   const form = document.getElementById('earningTypeForm');
-  const messageDiv = document.getElementById('message');
-  const submitBtn = document.getElementById('submitBtn');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const formData = {
-      name: document.getElementById('name').value.trim(),
-      code: document.getElementById('code').value.trim(),
+    const name = document.getElementById('name').value.trim();
+    const code = document.getElementById('code').value.trim();
+
+    if (!name || !code) {
+      toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    const payload = {
+      name,
+      code,
       includeInFot: document.getElementById('includeInFot').checked,
-      includeInAverageSalaryCalc: document.getElementById('includeInAverageSalaryCalc').checked,
+      includeInAverageSalaryCalc:
+      document.getElementById('includeInAverageSalaryCalc').checked,
       isIndexable: document.getElementById('isIndexable').checked,
       description: document.getElementById('description').value.trim()
     };
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = '⌛ Отправка...';
-
     try {
-      console.log('Отправляем данные:', formData);
+      toast.info('Отправка данных...');
 
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Ответ сервера:', errorText);
-        throw new Error(`Ошибка: ${response.status}`);
+        throw new Error(response.status);
       }
 
-      const data = await response.json();
-      console.log('Вид начисления создан:', data);
-
-      showMessage('✅ Вид начисления успешно создан!', 'success');
+      toast.success('Вид начисления создан');
 
       setTimeout(() => {
         window.location.href = 'earning-type-list.html';
-      }, 1000);
+      }, 800);
 
-    } catch (error) {
-      console.error('Ошибка при создании вида начисления:', error);
-      showMessage(`❌ Ошибка: ${error.message}`, 'error');
-
-      submitBtn.disabled = false;
-      submitBtn.textContent = '💾 Создать';
+    } catch (err) {
+      console.error(err);
+      toast.error('Ошибка при создании вида начисления');
     }
   });
-
-  function showMessage(text, type) {
-    messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
-  }
 </script>
+
+<!-- UI helpers -->
 <script src="/js/ui-draggable.js"></script>
+
 </body>
 </html>
