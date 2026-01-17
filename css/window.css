@@ -90,3 +90,9 @@
   overflow: auto;
   padding: 8px;
 }
+
+/* ===== FORM WINDOW VARIANT ===== */
+.window-form .window-content {
+  background-color: #c0c0c0;
+  padding: 20px;
+}

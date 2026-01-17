@@ -1,23 +1,51 @@
-<link rel="stylesheet" href="/css/base.css">
-<link rel="stylesheet" href="/css/window.css">
-<link rel="stylesheet" href="/css/form.css">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Добавить подразделение</title>
 
-<div id="page-content">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <form id="departmentForm">
-    <div class="form-group">
-      <label>Наименование *</label>
-      <input id="name">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
+</head>
+
+<body>
+
+<div class="main-window window-form">
+
+  <!-- TITLEBAR -->
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="/icons/folder.png">
+      <span>Добавить подразделение</span>
     </div>
+    <div class="window-button" onclick="location.href='department-list.html'">×</div>
+  </div>
 
-    <div class="button-container">
-      <button type="submit">💾 Создать</button>
-      <a href="department-list.html">❌ Отмена</a>
-    </div>
-  </form>
+  <!-- CONTENT -->
+  <div class="window-content">
+
+    <form id="departmentForm">
+
+      <div class="form-group">
+        <label>Наименование *</label>
+        <input id="name" required>
+      </div>
+
+      <div class="button-container">
+        <button type="submit">💾 Создать</button>
+        <a href="department-list.html" class="button">❌ Отмена</a>
+      </div>
+
+    </form>
+
+  </div>
 
 </div>
-
 <script>
   loadLayout({
     title: 'Добавить подразделение',
@@ -41,3 +69,5 @@
       });
     });
 </script>
+</body>
+</html>

@@ -1,19 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
+  <link rel="stylesheet" href="/css/taskbar.css">
+</head>
+
 <body>
 <div class="desktop">
-  <div id="app-window" class="main-window">
+
+  <div class="main-window">
     <div class="window-titlebar">
       <div class="window-title">
-        <img id="window-icon">
+        <img id="window-icon" width="20">
         <span id="window-title"></span>
       </div>
-      <button class="window-button" id="window-close">×</button>
+      <div class="window-button" id="window-close">×</div>
     </div>
 
-    <div class="window-content" id="page-content"></div>
+    <div class="window-content" id="page-content">
+      <!-- УНИКАЛЬНЫЙ КОНТЕНТ -->
+    </div>
   </div>
 
-  <div class="taskbar">...</div>
-</div>
+  <div class="taskbar">
+    <button class="start-button">Пуск</button>
+    <div class="clock" id="clock"></div>
+  </div>
 
-<div id="toast-container"></div>
+</div>
 </body>
+</html>
