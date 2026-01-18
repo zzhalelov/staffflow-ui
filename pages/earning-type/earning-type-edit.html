@@ -91,6 +91,14 @@
   const form = document.getElementById('earningTypeForm');
   const loading = document.getElementById('loading');
 
+  const nameInput = document.getElementById('name');
+  const codeInput = document.getElementById('code');
+  const descriptionInput = document.getElementById('description');
+
+  const includeInFotInput = document.getElementById('includeInFot');
+  const includeInAverageSalaryCalcInput = document.getElementById('includeInAverageSalaryCalc');
+  const isIndexableInput = document.getElementById('isIndexable');
+
   if (!id) {
     toast.error('Не передан ID');
     loading.remove();
@@ -105,12 +113,12 @@
 
       const data = await res.json();
 
-      name.value = data.name || '';
-      code.value = data.code || '';
-      includeInFot.checked = !!data.includeInFot;
-      includeInAverageSalaryCalc.checked = !!data.includeInAverageSalaryCalc;
-      isIndexable.checked = !!data.isIndexable;
-      description.value = data.description || '';
+      nameInput.value = data.name || '';
+      codeInput.value = data.code || '';
+      includeInFotInput.checked = !!data.includeInFot;
+      includeInAverageSalaryCalcInput.checked = !!data.includeInAverageSalaryCalc;
+      isIndexableInput.checked = !!data.isIndexable;
+      descriptionInput.value = data.description || '';
 
       loading.remove();
       form.hidden = false;
@@ -126,12 +134,12 @@
     e.preventDefault();
 
     const payload = {
-      name: name.value.trim(),
-      code: code.value.trim(),
-      includeInFot: includeInFot.checked,
-      includeInAverageSalaryCalc: includeInAverageSalaryCalc.checked,
-      isIndexable: isIndexable.checked,
-      description: description.value.trim()
+      name: nameInput.value.trim(),
+      code: codeInput.value.trim(),
+      includeInFot: includeInFotInput.checked,
+      includeInAverageSalaryCalc: includeInAverageSalaryCalcInput.checked,
+      isIndexable: isIndexableInput.checked,
+      description: descriptionInput.value.trim()
     };
 
     if (!payload.name || !payload.code || !payload.description) {
