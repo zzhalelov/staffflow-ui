@@ -1,12 +1,14 @@
 .search-container {
   display: flex;
+  gap: 8px;
   align-items: center;
-  gap: 6px;
   margin-left: auto;
 }
 
 .search-container input {
-  width: 120px;
-  font-size: 10px;
-  padding: 4px 6px;
+  padding: 4px 8px;
+  border: 2px inset #fff;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  width: 150px;
 }
