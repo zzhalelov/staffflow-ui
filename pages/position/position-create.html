@@ -10,227 +10,49 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-    }
-
-    body {
-      font-family: "Press Start 2P", monospace;
-      background-color: #327375;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    /* Desktop */
-    .desktop {
-      min-height: 100vh;
-      padding: 20px 20px 50px;
-      position: relative;
-    }
-
-    /* Main window */
-    .main-window {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 95vw;
-      max-width: 1000px;
-      height: 85vh;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, .5);
-    }
-
-    /* Titlebar */
-    .window-titlebar {
-      background: linear-gradient(90deg, #000080, #1084d0);
-      color: #fff;
-      padding: 4px 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 32px;
-    }
-
-    .window-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-    }
-
-    .window-button {
-      width: 24px;
-      height: 24px;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000;
-      font-family: Arial, sans-serif;
-    }
-
-    .window-button:active {
-      border-style: inset;
-    }
-
-    /* Toolbar */
-    .toolbar {
-      background-color: #c0c0c0;
-      border-bottom: 2px solid #808080;
-      padding: 8px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .toolbar-button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 6px 12px;
-      font-size: 10px;
-      cursor: pointer;
-      font-family: "Press Start 2P", monospace;
-      text-decoration: none;
-    }
-
-    .toolbar-button:active {
-      border-style: inset;
-    }
-
-    /* Content */
-    .window-content {
-      flex: 1;
-      background-color: #fff;
-      overflow: auto;
-      padding: 12px;
-    }
-
-    label {
-      font-size: 10px;
-      color: #000;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 6px;
-      margin: 6px 0 12px;
-      border: 2px inset #fff;
-      font-family: "Courier New", monospace;
-      font-size: 11px;
-    }
-
-    hr {
-      margin: 12px 0;
-    }
-
-    button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 6px 12px;
-      font-size: 10px;
-      cursor: pointer;
-      font-family: "Press Start 2P", monospace;
-    }
-
-    button:active {
-      border-style: inset;
-    }
-
-    button.delete {
-      background: #c00000;
-      color: #fff;
-    }
-
-    /* Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10px;
-      margin-top: 10px;
-    }
-
-    th {
-      background-color: #c0c0c0;
-      color: #000;
-      border: 2px outset #fff;
-      padding: 6px;
-    }
-
-    td {
-      border: 1px solid #808080;
-      padding: 6px;
-      color: #000;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f0f0f0;
-    }
-
-    tr:hover {
-      background-color: #000080;
-    }
-
-    tr:hover td {
-      color: #fff;
-    }
-
-    .message {
-      margin-top: 10px;
-      font-size: 10px;
-      color: #900;
-    }
-  </style>
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
 </head>
 
 <body>
 
-<div class="desktop">
+<div class="main-window window-form">
+  <!-- TITLEBAR -->
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="/icons/folder.png" alt="">
+      <span>Добавить должность</span>
+    </div>
+    <div
+      class="window-button"
+      onclick="location.href='position-list.html'"
+    >×
+    </div>
+  </div>
 
-  <div class="main-window">
+  <!-- CONTENT -->
+  <div class="window-content">
 
-    <!-- Titlebar -->
-    <div class="window-titlebar">
-      <div class="window-title">
-        <img src="https://win98icons.alexmeub.com/icons/png/briefcase-4.png" width="20">
-        <span>Добавить должность</span>
+    <form id="positionForm">
+
+      <div class="form-group">
+        <label for="name">Наименование должности *</label>
+        <input type="text" id="name" placeholder="Менеджер" required>
       </div>
-      <div class="window-button" onclick="location.href='position-list.html'">×</div>
-    </div>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <a href="position-list.html" class="toolbar-button">⬅ Назад</a>
-      <button class="toolbar-button" onclick="submitForm()">💾 Сохранить</button>
-    </div>
+      <div class="form-group">
+        <label for="earningTypeSelect">Вид начисления</label>
+        <select id="earningTypeSelect"></select>
+      </div>
 
-    <!-- Content -->
-    <div class="window-content">
+      <div class="form-group">
+        <label for="amount">Сумма</label>
+        <input type="number" id="amount" min="0" step="100" placeholder="100000">
+      </div>
 
-      <label>Наименование должности *</label>
-      <input type="text" id="name" placeholder="Менеджер">
-
-      <hr>
-
-      <label>Вид начисления</label>
-      <select id="earningTypeSelect"></select>
-
-      <label>Сумма</label>
-      <input type="number" id="amount" min="0" step="100" placeholder="100000">
-
-      <button onclick="addItem()">➕ Добавить начисление</button>
+      <button type="button" onclick="addItem()">➕ Добавить начисление</button>
 
       <table>
         <thead>
@@ -243,19 +65,29 @@
         <tbody id="itemsBody"></tbody>
       </table>
 
-      <div id="message" class="message"></div>
+      <div class="button-container">
+        <button type="submit">💾 Создать</button>
+        <a href="position-list.html" class="button">❌ Отмена</a>
+      </div>
 
-    </div>
+    </form>
   </div>
 </div>
 
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Toast -->
+<script src="/js/ui-toast.js"></script>
+
+<!-- Page logic -->
 <script>
   const POSITIONS_API = '/api/positions';
   const EARNING_TYPES_API = '/api/earning-types';
 
+  const form = document.getElementById('positionForm')
   const earningTypeSelect = document.getElementById('earningTypeSelect');
   const itemsBody = document.getElementById('itemsBody');
-  const message = document.getElementById('message');
 
   let earningTypes = [];
   let scheduledItems = [];
@@ -279,18 +111,17 @@
     const amount = Number(document.getElementById('amount').value);
 
     if (!typeId || amount <= 0) {
-      message.textContent = 'Укажите вид начисления и сумму';
+      toast.error('Укажите вид начисления и сумму');
       return;
     }
 
     if (scheduledItems.some(i => i.earningTypeId === typeId)) {
-      message.textContent = 'Этот вид начисления уже добавлен';
+      toast.error('Этот вид начисления уже добавлен');
       return;
     }
 
     scheduledItems.push({earningTypeId: typeId, amount});
     renderItems();
-    message.textContent = '';
   }
 
   function renderItems() {
@@ -303,7 +134,11 @@
       tr.innerHTML = `
         <td>${et.name}</td>
         <td>${item.amount.toLocaleString('ru-RU')}</td>
-        <td><button class="delete" onclick="removeItem(${index})">🗑 DEL</button></td>
+        <td>
+          <button type="button" class="delete" onclick="removeItem(${index})">
+            🗑
+          </button>
+        </td>
       `;
       itemsBody.appendChild(tr);
     });
@@ -314,33 +149,45 @@
     renderItems();
   }
 
-  async function submitForm() {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
     const name = document.getElementById('name').value.trim();
 
     if (!name || scheduledItems.length === 0) {
-      message.textContent = 'Заполните название и начисления';
+      toast.error('Заполните название и начисления');
       return;
     }
 
     const payload = {name, scheduledItems};
 
-    const res = await fetch(POSITIONS_API, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    });
+    try {
+      toast.info('Отправка данных...');
 
-    if (!res.ok) {
-      message.textContent = 'Ошибка сохранения';
-      return;
+      const res = await fetch(POSITIONS_API, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error(res.status);
+
+      toast.success('Должность создана');
+
+      setTimeout(() => {
+        location.href = 'position-list.html';
+      }, 800);
+
+    } catch (err) {
+      console.error(err);
+      toast.error('Ошибка при создании должности');
     }
-
-    alert('Должность создана');
-    location.href = 'position-list.html';
-  }
+  });
 
   loadEarningTypes();
 </script>
+
+<!-- UI helpers -->
 <script src="/js/ui-draggable.js"></script>
 </body>
 </html>
