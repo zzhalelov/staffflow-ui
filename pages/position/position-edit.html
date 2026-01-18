@@ -36,6 +36,7 @@
 
     <form id="positionForm" hidden>
 
+      <!-- POSITION NAME -->
       <div class="form-group">
         <label>Наименование должности *</label>
         <input type="text" id="nameInput" required>
@@ -43,6 +44,7 @@
 
       <hr>
 
+      <!-- SCHEDULE ITEMS -->
       <label>Начисления</label>
 
       <table>
@@ -122,8 +124,7 @@
 
     earningTypeSelect.innerHTML = '<option value="">— вид начисления —</option>';
     earningTypes.forEach(e => {
-      earningTypeSelect.innerHTML +=
-        `<option value="${e.id}">${e.name}</option>`;
+      earningTypeSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
     });
   }
 
@@ -139,6 +140,15 @@
 
   function renderTable() {
     scheduleBody.innerHTML = '';
+
+    if (scheduleItems.length === 0) {
+      scheduleBody.innerHTML = `
+        <tr>
+          <td colspan="3">Начисления не добавлены</td>
+        </tr>
+      `;
+      return;
+    }
 
     scheduleItems.forEach((item, index) => {
       const tr = document.createElement('tr');
