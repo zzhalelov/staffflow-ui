@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Трудовые договоры</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link rel="stylesheet" href="/css/icons.css">
+  <link rel="stylesheet" href="/css/ui-modal.css">
+</head>
+
+<body>
+
+<!-- OVERLAY -->
+<div id="overlay" class="ui-overlay hidden"></div>
+
+<!-- MODAL WINDOW -->
+<div id="contractModal" class="modal-window hidden">
+
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="https://win98icons.alexmeub.com/icons/png/users-4.png">
+      <span>C:\Трудовые договоры</span>
+    </div>
+
+    <button class="window-button close" onclick="closeModal()">×</button>
+  </div>
+
+  <div class="window-toolbar">
+    <button class="toolbar-btn">Список</button>
+    <button class="toolbar-btn">Добавить</button>
+  </div>
+
+  <div class="window-content icon-grid">
+    <a class="folder-icon" href="contract-list.html">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Список трудовых договоров</div>
+    </a>
+
+    <a class="folder-icon" href="contract-create.html">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Добавить трудовой договор</div>
+    </a>
+
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Архив</div>
+    </a>
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Отчёты</div>
+    </a>
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Импорт / Экспорт</div>
+    </a>
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Настройки</div>
+    </a>
+  </div>
+</div>
+
+<script src="/js/ui-window-manager.js"></script>
+
+<script>
+  // открыть сразу (как системное окно)
+  openModal('contractModal');
+  registerWindow('#contractModal');
+
+  function openModal(id) {
+    document.getElementById('overlay').classList.remove('hidden');
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('contractModal').classList.add('hidden');
+  }
+</script>
+
+</body>
+</html>
