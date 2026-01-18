@@ -1,0 +1,60 @@
+/* ===== LIST ONLY ===== */
+
+.table-scope {
+  width: 100%;
+}
+
+.table-scope table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 10px;
+}
+
+.table-scope th,
+.table-scope td {
+  border: 1px solid #808080;
+  padding: 6px;
+  color: #000;
+  vertical-align: middle;
+}
+
+.table-scope th {
+  background: #c0c0c0;
+  border: 2px outset #fff;
+  font-weight: bold;
+}
+
+.table-scope tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.table-scope tr:hover {
+  background-color: #000080;
+}
+
+.table-scope tr:hover td {
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actions button {
+  background: silver;
+  border: 2px outset #C0C0C0;
+  font-size: 9px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.actions button:active {
+  border-style: inset;
+}
+
+.actions .delete {
+  background: #c00000;
+  color: #fff;
+}

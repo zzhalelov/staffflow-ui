@@ -2,337 +2,60 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Список подразделений</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-    }
-
-    body {
-      font-family: "Press Start 2P", "Courier New", monospace;
-      background-color: #327375;
-      color: #fff;
-      cursor: url(https://qomp.club/assets/images/cursor.svg), auto;
-      overflow: hidden;
-    }
-
-    .desktop {
-      min-height: 100vh;
-      background-color: #327375;
-      padding: 20px 20px 50px;
-      position: relative;
-    }
-
-    /* Taskbar */
-    .taskbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 48px;
-      background-color: silver;
-      border-top: 2px solid white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px;
-      z-index: 1000;
-      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .start-button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 6px 24px;
-      font-family: "Press Start 2P", monospace;
-      font-size: 14px;
-      cursor: pointer;
-      height: 36px;
-    }
-
-    .clock {
-      font-family: "Press Start 2P", monospace;
-      color: #000;
-      font-size: 12px;
-      padding: 4px 8px;
-      background-color: rgba(192, 192, 192, 0.8);
-      border: 1px inset #C0C0C0;
-    }
-
-    /* Main Window */
-    .main-window {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 95vw;
-      max-width: 1200px;
-      height: 85vh;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .window-titlebar {
-      background: linear-gradient(90deg, #000080, #1084d0);
-      color: white;
-      padding: 4px 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 32px;
-      cursor: move;
-    }
-
-    .window-title {
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .window-button {
-      width: 24px;
-      height: 24px;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000;
-      font-family: Arial, sans-serif;
-    }
-
-    /* Toolbar */
-    .toolbar {
-      background-color: #c0c0c0;
-      border-bottom: 2px solid #808080;
-      padding: 8px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .toolbar-button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 6px 12px;
-      font-size: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .toolbar-button:active {
-      border-style: inset;
-    }
-
-    /* Search */
-    .search-container {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-left: auto;
-    }
-
-    .search-container input {
-      padding: 4px 8px;
-      border: 2px inset #fff;
-      font-family: "Courier New", monospace;
-      font-size: 11px;
-      width: 150px;
-    }
-
-    /* Content */
-    .window-content {
-      flex: 1;
-      background-color: #fff;
-      overflow: auto;
-      padding: 4px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10px;
-      background-color: #fff;
-    }
-
-    th, td {
-      border: 1px solid #808080;
-      padding: 6px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #c0c0c0;
-      color: #000;
-      font-weight: bold;
-      border: 2px outset #fff;
-    }
-
-    td {
-      color: #000;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f0f0f0;
-    }
-
-    tr:hover {
-      background-color: #000080;
-      color: #fff;
-    }
-
-    tr:hover td {
-      color: #fff;
-    }
-
-    .actions {
-      display: flex;
-      gap: 4px;
-    }
-
-    .actions button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 3px 8px;
-      font-size: 9px;
-      cursor: pointer;
-      font-family: "Press Start 2P", monospace;
-    }
-
-    .actions button:active {
-      border-style: inset;
-    }
-
-    .actions button.delete {
-      background: #c00000;
-      color: #fff;
-    }
-
-    .message {
-      padding: 8px;
-      margin: 8px;
-      border: 2px solid;
-      font-size: 10px;
-    }
-
-    .error {
-      background-color: #fcc;
-      border-color: #f00;
-      color: #c00;
-    }
-
-    .success {
-      background-color: #cfc;
-      border-color: #0f0;
-      color: #060;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #666;
-    }
-
-    /* Back Button */
-    .back-button {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 100;
-      text-decoration: none;
-    }
-
-    .back-icon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      cursor: pointer;
-      width: 100px;
-    }
-
-    .back-icon:hover {
-      background-color: rgba(0, 0, 128, 0.3);
-    }
-
-    .icon-label {
-      font-size: 10px;
-      color: #fff;
-      text-shadow: 1px 1px 0 #000;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/list.css">
+  <link rel="stylesheet" href="/css/search.css">
 </head>
 
 <body>
 <div class="desktop">
 
-  <!-- Main Window -->
   <div class="main-window">
+
+    <!-- TITLEBAR -->
     <div class="window-titlebar">
       <div class="window-title">
-        <img src="https://win98icons.alexmeub.com/icons/png/users-4.png" alt="" width="20">
+        <img src="https://win98icons.alexmeub.com/icons/png/users-4.png" width="20">
         <span>Список подразделений</span>
       </div>
-      <div class="window-button" onclick="window.location.href='department.html'">×</div>
+      <div class="window-button" onclick="location.href='department.html'">×</div>
     </div>
 
-    <!-- Toolbar -->
+    <!-- TOOLBAR -->
     <div class="toolbar">
       <a href="department-create.html" class="toolbar-button">➕ Добавить</a>
+
       <div class="search-container">
-        <span style="font-size: 10px; color: #000;">Поиск ID:</span>
-        <input type="number" id="searchInput" placeholder="ID">
-        <button class="toolbar-button" onclick="searchDepartment()">🔍 Найти</button>
+        <span>Поиск ID:</span>
+        <input type="number" id="searchInput">
+        <button class="toolbar-button" onclick="searchDepartment()">🔍Найти</button>
         <button class="toolbar-button" onclick="clearSearch()">✖ Очистить</button>
       </div>
     </div>
 
-    <div id="message"></div>
-
-    <!-- Content -->
+    <!-- CONTENT -->
     <div class="window-content">
-      <table>
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Наименование</th>
-          <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody id="departmentTableBody">
-        <tr>
-          <td colspan="3" class="loading">Загрузка данных...</td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="table-scope">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Наименование</th>
+            <th>Действия</th>
+          </tr>
+          </thead>
+          <tbody id="departmentTableBody">
+          <tr>
+            <td colspan="3" class="loading">Загрузка...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
 
-  <!-- Taskbar -->
-  <div class="taskbar">
-    <button class="start-button">Пуск</button>
-    <div class="clock" id="clock"></div>
   </div>
 </div>
 
