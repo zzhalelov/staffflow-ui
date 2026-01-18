@@ -2,321 +2,181 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Редактировать должность</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Редактировать должность</title>
 
-  <!-- Pixel font -->
+  <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      image-rendering: pixelated;
-    }
-
-    body {
-      font-family: "Press Start 2P", monospace;
-      background-color: #327375;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    /* Desktop */
-    .desktop {
-      min-height: 100vh;
-      padding: 20px 20px 50px;
-      position: relative;
-    }
-
-    /* Main window */
-    .main-window {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 95vw;
-      max-width: 1000px;
-      height: 85vh;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, .5);
-    }
-
-    /* Titlebar */
-    .window-titlebar {
-      background: linear-gradient(90deg, #000080, #1084d0);
-      color: white;
-      padding: 4px 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 32px;
-    }
-
-    .window-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-    }
-
-    .window-button {
-      width: 24px;
-      height: 24px;
-      background-color: #c0c0c0;
-      border: 2px outset #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000;
-      font-family: Arial, sans-serif;
-    }
-
-    .window-button:active {
-      border-style: inset;
-    }
-
-    /* Toolbar */
-    .toolbar {
-      background-color: #c0c0c0;
-      border-bottom: 2px solid #808080;
-      padding: 8px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .toolbar-button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 6px 12px;
-      font-size: 10px;
-      cursor: pointer;
-      font-family: "Press Start 2P", monospace;
-      text-decoration: none;
-    }
-
-    .toolbar-button:active {
-      border-style: inset;
-    }
-
-    /* Content */
-    .window-content {
-      flex: 1;
-      background-color: #fff;
-      overflow: auto;
-      padding: 12px;
-    }
-
-    label {
-      font-size: 10px;
-      color: #000;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 6px;
-      margin: 6px 0 12px;
-      border: 2px inset #fff;
-      font-family: "Courier New", monospace;
-      font-size: 11px;
-    }
-
-    button {
-      background: silver;
-      color: #000;
-      border: 2px outset #C0C0C0;
-      padding: 6px 12px;
-      font-size: 10px;
-      cursor: pointer;
-      font-family: "Press Start 2P", monospace;
-    }
-
-    button:active {
-      border-style: inset;
-    }
-
-    button.delete {
-      background: #c00000;
-      color: #fff;
-    }
-
-    /* Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10px;
-      margin-top: 10px;
-    }
-
-    th {
-      background-color: #c0c0c0;
-      color: #000;
-      border: 2px outset #fff;
-      padding: 6px;
-    }
-
-    td {
-      border: 1px solid #808080;
-      padding: 6px;
-      color: #000;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f0f0f0;
-    }
-
-    tr:hover {
-      background-color: #000080;
-    }
-
-    tr:hover td {
-      color: #fff;
-    }
-
-    .message {
-      margin-bottom: 10px;
-      font-size: 10px;
-      padding: 8px;
-      border: 2px solid;
-    }
-
-    .error {
-      background: #fcc;
-      border-color: #f00;
-      color: #900;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 30px;
-      font-size: 11px;
-      color: #000;
-    }
-  </style>
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
 </head>
 
 <body>
 
-<div class="desktop">
-  <div class="main-window">
+<div class="main-window window-form">
 
-    <!-- Titlebar -->
-    <div class="window-titlebar">
-      <div class="window-title">
-        <img src="https://win98icons.alexmeub.com/icons/png/briefcase-4.png" width="20">
-        <span>Редактировать должность</span>
-      </div>
-      <div class="window-button" onclick="location.href='position-list.html'">×</div>
+  <!-- TITLEBAR -->
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="https://win98icons.alexmeub.com/icons/png/briefcase-4.png" width="20">
+      <span>Редактировать должность</span>
     </div>
+    <div class="window-button" onclick="location.href='position-list.html'">×</div>
+  </div>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <a href="position-list.html" class="toolbar-button">⬅ Назад</a>
-      <button class="toolbar-button" onclick="submitForm()">💾 Сохранить</button>
-    </div>
+  <!-- CONTENT -->
+  <div class="window-content">
 
-    <!-- Content -->
-    <div class="window-content">
+    <div id="loading" class="loading">⌛ Загрузка данных...</div>
 
-      <div id="message"></div>
-      <div id="loadingDiv" class="loading">⌛ Загрузка данных...</div>
+    <form id="positionForm" hidden>
 
-      <form id="positionForm" style="display:none;">
-
+      <div class="form-group">
         <label>Наименование должности *</label>
-        <input type="text" id="name" required>
+        <input type="text" id="nameInput" required>
+      </div>
 
-        <hr>
+      <hr>
 
-        <label>Начисления</label>
+      <label>Начисления</label>
 
-        <table>
-          <thead>
-          <tr>
-            <th>Вид начисления</th>
-            <th>Сумма</th>
-            <th></th>
-          </tr>
-          </thead>
-          <tbody id="scheduleTableBody"></tbody>
-        </table>
+      <table>
+        <thead>
+        <tr>
+          <th>Вид начисления</th>
+          <th>Сумма</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody id="scheduleBody"></tbody>
+      </table>
 
-        <hr>
-
+      <div class="form-group">
         <select id="earningTypeSelect"></select>
         <input type="number" id="amountInput" placeholder="Сумма">
-        <button type="button" onclick="addScheduleItem()">➕ Добавить начисление</button>
+        <button type="button" id="addItemBtn">➕ Добавить начисление</button>
+      </div>
 
-      </form>
+      <div class="button-container">
+        <button type="submit">💾 Сохранить</button>
+        <a href="position-list.html" class="button">❌ Отмена</a>
+      </div>
 
-    </div>
+    </form>
+
   </div>
 </div>
 
+<!-- Toast -->
+<div id="toast-container"></div>
+<script src="/js/ui-toast.js"></script>
+
+<!-- Logic -->
 <script>
-  const API_URL = '/api/positions';
+  const POSITIONS_API = '/api/positions';
   const EARNING_API = '/api/earning-types';
 
   const params = new URLSearchParams(location.search);
   const positionId = params.get('id');
 
-  let scheduleItems = [];
-  let earningTypes = [];
+  const form = document.getElementById('positionForm');
+  const loading = document.getElementById('loading');
 
-  async function loadPosition() {
-    const pos = await fetch(`${API_URL}/${positionId}`).then(r => r.json());
-    document.getElementById('name').value = pos.name;
-    scheduleItems = pos.scheduleItems || [];
-    renderScheduleTable();
+  const nameInput = document.getElementById('nameInput');
+  const earningTypeSelect = document.getElementById('earningTypeSelect');
+  const amountInput = document.getElementById('amountInput');
+  const scheduleBody = document.getElementById('scheduleBody');
+  const addItemBtn = document.getElementById('addItemBtn');
+
+  let earningTypes = [];
+  let scheduleItems = [];
+
+  if (!positionId) {
+    toast.error('Не передан ID должности');
+    loading.remove();
+  } else {
+    init();
+  }
+
+  async function init() {
+    try {
+      await loadEarningTypes();
+      await loadPosition();
+      loading.remove();
+      form.hidden = false;
+    } catch (err) {
+      console.error(err);
+      loading.remove();
+      toast.error('Ошибка загрузки данных');
+    }
   }
 
   async function loadEarningTypes() {
-    earningTypes = await fetch(EARNING_API).then(r => r.json());
-    const select = document.getElementById('earningTypeSelect');
-    select.innerHTML = '<option value="">— вид начисления —</option>';
-    earningTypes.forEach(e =>
-      select.innerHTML += `<option value="${e.id}">${e.name}</option>`
-    );
-  }
+    const res = await fetch(EARNING_API);
+    earningTypes = await res.json();
 
-  function renderScheduleTable() {
-    const tbody = document.getElementById('scheduleTableBody');
-    tbody.innerHTML = '';
-
-    scheduleItems.forEach((item, index) => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${item.earningTypeName}</td>
-          <td>
-            <input type="number" value="${item.amount}"
-                   onchange="scheduleItems[${index}].amount = Number(this.value)">
-          </td>
-          <td>
-            <button class="delete" type="button"
-                    onclick="removeScheduleItem(${index})">🗑 DEL</button>
-          </td>
-        </tr>
-      `;
+    earningTypeSelect.innerHTML = '<option value="">— вид начисления —</option>';
+    earningTypes.forEach(e => {
+      earningTypeSelect.innerHTML +=
+        `<option value="${e.id}">${e.name}</option>`;
     });
   }
 
-  function addScheduleItem() {
-    const typeId = document.getElementById('earningTypeSelect').value;
-    const amount = Number(document.getElementById('amountInput').value);
-    if (!typeId || amount <= 0) return;
+  async function loadPosition() {
+    const res = await fetch(`${POSITIONS_API}/${positionId}`);
+    if (!res.ok) throw new Error(res.status);
+
+    const data = await res.json();
+    nameInput.value = data.name || '';
+    scheduleItems = data.scheduleItems || [];
+    renderTable();
+  }
+
+  function renderTable() {
+    scheduleBody.innerHTML = '';
+
+    scheduleItems.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.earningTypeName}</td>
+        <td>
+          <input type="number" value="${item.amount}"
+                 onchange="scheduleItems[${index}].amount = Number(this.value)">
+        </td>
+        <td>
+          <button type="button" class="delete"
+                  onclick="removeItem(${index})">🗑</button>
+        </td>
+      `;
+      scheduleBody.appendChild(tr);
+    });
+  }
+
+  function removeItem(index) {
+    scheduleItems.splice(index, 1);
+    renderTable();
+  }
+
+  addItemBtn.addEventListener('click', () => {
+    const typeId = earningTypeSelect.value;
+    const amount = Number(amountInput.value);
+
+    if (!typeId || amount <= 0) {
+      toast.error('Укажите вид начисления и сумму');
+      return;
+    }
+
+    if (scheduleItems.some(i => i.earningTypeId == typeId)) {
+      toast.error('Этот вид начисления уже добавлен');
+      return;
+    }
 
     const et = earningTypes.find(e => e.id == typeId);
-    if (scheduleItems.some(i => i.earningTypeId == typeId)) return;
 
     scheduleItems.push({
       earningTypeId: et.id,
@@ -324,36 +184,45 @@
       amount
     });
 
-    renderScheduleTable();
-  }
+    amountInput.value = '';
+    renderTable();
+  });
 
-  function removeScheduleItem(index) {
-    scheduleItems.splice(index, 1);
-    renderScheduleTable();
-  }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  async function submitForm() {
-    const payload = {
-      name: document.getElementById('name').value.trim(),
-      scheduleItems
-    };
+    if (!nameInput.value.trim() || scheduleItems.length === 0) {
+      toast.error('Заполните название и начисления');
+      return;
+    }
 
-    await fetch(`${API_URL}/${positionId}`, {
-      method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    });
+    try {
+      toast.info('Сохранение...');
 
-    location.href = 'position-list.html';
-  }
+      const res = await fetch(`${POSITIONS_API}/${positionId}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: nameInput.value.trim(),
+          scheduleItems
+        })
+      });
 
-  (async () => {
-    await loadEarningTypes();
-    await loadPosition();
-    document.getElementById('loadingDiv').style.display = 'none';
-    document.getElementById('positionForm').style.display = 'block';
-  })();
+      if (!res.ok) throw new Error(res.status);
+
+      toast.success('Должность обновлена');
+
+      setTimeout(() => {
+        location.href = 'position-list.html';
+      }, 800);
+
+    } catch (err) {
+      console.error(err);
+      toast.error('Ошибка сохранения');
+    }
+  });
 </script>
+
 <script src="/js/ui-draggable.js"></script>
 </body>
 </html>
