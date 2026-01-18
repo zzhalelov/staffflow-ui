@@ -122,9 +122,9 @@
 
       idNumberInput.value = data.idNumber || '';
       fullNameInput.value = data.fullName || '';
-      shortNameInput.value = !!data.shortName;
-      addressInput.value = !!data.address;
-      organizationTypeInput.value = !!data.organizationType;
+      shortNameInput.value = data.shortName;
+      addressInput.value = data.address;
+      organizationTypeInput.value = data.organizationType;
       hasBranchesInput.checked = data.hasBranches || '';
       isBranchInput.checked = data.isBranch || '';
 
@@ -161,7 +161,7 @@
       toast.info('Сохранение...');
 
       const res = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
       });

@@ -115,9 +115,9 @@
 
       nameInput.value = data.name || '';
       codeInput.value = data.code || '';
-      includeInFotInput.checked = !!data.includeInFot;
-      includeInAverageSalaryCalcInput.checked = !!data.includeInAverageSalaryCalc;
-      isIndexableInput.checked = !!data.isIndexable;
+      includeInFotInput.checked = data.includeInFot;
+      includeInAverageSalaryCalcInput.checked = data.includeInAverageSalaryCalc;
+      isIndexableInput.checked = data.isIndexable;
       descriptionInput.value = data.description || '';
 
       loading.remove();

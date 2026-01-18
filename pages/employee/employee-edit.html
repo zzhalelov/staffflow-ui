@@ -124,9 +124,9 @@
 
       lastNameInput.value = data.lastName || '';
       firstNameInput.value = data.firstName || '';
-      iinInput.value = !!data.iin;
-      genderInput.value = !!data.gender;
-      emailInput.value = !!data.email;
+      iinInput.value = data.iin;
+      genderInput.value = data.gender;
+      emailInput.value = data.email;
       phoneInput.value = data.phone || '';
       addressInput.value = data.address || '';
       citizenshipInput.value = data.citizenship || '';
@@ -166,7 +166,7 @@
       toast.info('Сохранение...');
 
       const res = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
       });
