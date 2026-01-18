@@ -13,6 +13,47 @@
   <!-- Styles -->
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/window.css">
+
+  <style>
+    /* === TABLE FIX: ONLY FOR THIS PAGE === */
+    .table-scope table {
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
+      position: relative;
+    }
+
+    .table-scope thead {
+      display: table-header-group;
+    }
+
+    .table-scope tbody {
+      display: table-row-group;
+    }
+
+    .table-scope tr {
+      display: table-row;
+    }
+
+    .table-scope th,
+    .table-scope td {
+      display: table-cell;
+      border: 1px solid #808080;
+      padding: 6px;
+      font-size: 10px;
+      color: #000;
+      vertical-align: middle;
+    }
+
+    .table-scope th {
+      background: #c0c0c0;
+    }
+
+    .table-scope .actions {
+      display: flex;
+      gap: 6px;
+    }
+  </style>
 </head>
 
 <body>
@@ -43,22 +84,24 @@
 
     <!-- CONTENT -->
     <div class="window-content">
-      <table>
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Должность</th>
-          <th>Вид начисления</th>
-          <th>Сумма</th>
-          <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody id="tableBody">
-        <tr>
-          <td colspan="5" class="loading">Загрузка...</td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="table-scope">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Должность</th>
+            <th>Вид начисления</th>
+            <th>Сумма</th>
+            <th>Действия</th>
+          </tr>
+          </thead>
+          <tbody id="tableBody">
+          <tr>
+            <td colspan="5" class="loading">Загрузка...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>
