@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Список трудовых договоров</title>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/search.css">
+  <link rel="stylesheet" href="/css/list.css">
+  <link rel="stylesheet" href="/css/table.css">
+</head>
+
+<body>
+<div class="desktop">
+
+  <div class="main-window">
+
+    <!-- TITLEBAR -->
+    <div class="window-titlebar">
+      <div class="window-title">
+        <img src="https://win98icons.alexmeub.com/icons/png/users-4.png" width="20">
+        <span>Список трудовых договоров</span>
+      </div>
+      <div class="window-button" onclick="location.href='contract.html'">×</div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <a href="contract-create.html" class="toolbar-button">
+        ➕ Добавить
+      </a>
+      <!-- ✅ SEARCH -->
+      <div class="search-container">
+        <span style="font-size: 10px; color: #000;">Поиск ID:</span>
+        <input type="number" id="searchInput" placeholder="ID">
+        <button class="toolbar-button" onclick="searchContract()">🔍 Найти</button>
+        <button class="toolbar-button" onclick="clearSearch()">✖ Очистить</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="window-content">
+      <div class="table-scope">
+        <table>
+          <thead>
+          <tr>
+            <th style="width:120px">ID</th>
+            <th>Организация</th>
+            <th>Сотрудник</th>
+            <th>Дата приёма</th>
+            <th>Подразделение</th>
+            <th>Должность</th>
+            <th>Статус</th>
+            <th style="width:220px">Действия</th>
+          </tr>
+          </thead>
+
+          <tbody id="contractTableBody">
+          <tr>
+            <td colspan="8" class="loading">Загрузка...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // const API_URL = "http://localhost:8081/api/contracts";
+  const API_URL = '/api/contracts';
+  let allContracts = [];
+
+  // Load contracts
+  async function loadContracts() {
+    const tbody = document.getElementById('contractTableBody');
+    const messageDiv = document.getElementById('message');
+
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      allContracts = data;
+      displayContracts(data);
+    } catch (error) {
+      console.error('Ошибка при загрузке данных:', error);
+      tbody.innerHTML = '<tr><td colspan="8" class="error">Ошибка загрузки данных</td></tr>';
+      messageDiv.innerHTML = `<div class="message error">Ошибка: ${error.message}</div>`;
+    }
+  }
+
+  function displayContracts(contracts) {
+    const tbody = document.getElementById('contractTableBody');
+    tbody.innerHTML = '';
+
+    if (contracts.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8">Нет данных</td></tr>';
+      return;
+    }
+
+    const statusMap = {
+      NOT_SIGNED: 'Не подписан',
+      SIGNED: 'Подписан',
+      RESIGNED: 'Расторгнут'
+    };
+
+    contracts.forEach((contr) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${contr.id}</td>
+        <td>${contr.organization.shortName}</td>
+        <td>${contr.employee.lastName + " " + contr.employee.firstName}</td>
+        <td>${contr.hireDate}</td>
+        <td>${contr.department.name}</td>
+        <td>${contr.position.name}</td>
+        <td>${statusMap[contr.laborContractStatus] ?? contr.laborContractStatus}</td>
+        <td>
+            <div class="actions">
+              <button onclick="editContract(${contr.id})">✏ EDIT</button>
+              <button class="delete" onclick="deleteContract(${contr.id}, '${contr.employee}')">🗑 DEL</button>
+            </div>
+        </td>
+        `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function searchContract() {
+    const searchInput = document.getElementById('searchInput');
+    const searchId = parseInt(searchInput.value);
+    const messageDiv = document.getElementById('message');
+
+    if (!searchId || isNaN(searchId)) {
+      messageDiv.innerHTML = '<div class="message error">Введите корректный ID</div>';
+      setTimeout(() => messageDiv.innerHTML = '', 2000);
+      return;
+    }
+
+    const filteredContracts = allContracts.filter(contr => contr.id === searchId);
+
+    if (filteredContracts.length === 0) {
+      messageDiv.innerHTML = '<div class="message error">ТД не найден</div>';
+      displayContracts([]);
+    } else {
+      messageDiv.innerHTML = '';
+      displayContracts(filteredContracts);
+    }
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('message').innerHTML = '';
+    displayContracts(allContracts);
+  }
+
+  function editContract(id) {
+    window.location.href = `contract-edit.html?id=${id}`;
+  }
+
+  async function deleteContract(id, employee) {
+    if (!confirm(`Удалить ТД "${employee}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = '<div class="message success">ТД удален!</div>';
+
+      setTimeout(() => {
+        messageDiv.innerHTML = '';
+        loadContracts();
+      }, 1500);
+    } catch (error) {
+      console.error('Ошибка при удалении:', error);
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = `<div class="message error">Ошибка: ${error.message}</div>`;
+    }
+  }
+
+  // Load on page load
+  window.addEventListener('DOMContentLoaded', loadContracts);
+
+  // Search on Enter
+  document.getElementById('searchInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      searchContract();
+    }
+  });
+
+</script>
+</body>
+</html>
