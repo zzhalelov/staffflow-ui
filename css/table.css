@@ -39,8 +39,22 @@ tr:hover td {
 }
 
 .actions button {
+  background: silver;
+  color: #000;
+  border: 2px outset #C0C0C0;
   padding: 3px 8px;
   font-size: 9px;
+  cursor: pointer;
+  font-family: "Press Start 2P", monospace;
+}
+
+.actions button:active {
+  border-style: inset;
+}
+
+.actions .status {
+  background: #008080;
+  color: #fff;
 }
 
 .actions .delete {
