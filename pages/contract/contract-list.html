@@ -128,6 +128,7 @@
         <td>
             <div class="actions">
               <button onclick="editContract(${contr.id})">✏ EDIT</button>
+              <button onclick="changeStatus(${contr.id})">🔄 STATUS</button>
               <button class="delete" onclick="deleteContract(${contr.id}, '${contr.employee}')">🗑 DEL</button>
             </div>
         </td>
@@ -166,6 +167,10 @@
 
   function editContract(id) {
     window.location.href = `contract-edit.html?id=${id}`;
+  }
+
+  function changeStatus(id) {
+    window.location.href = `contract-edit-status.html?id=${id}`;
   }
 
   async function deleteContract(id, employee) {
