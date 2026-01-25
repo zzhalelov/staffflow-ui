@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Редактировать расчетный показатель</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
+</head>
+
+<body>
+
+<div class="main-window window-form">
+
+  <!-- TITLEBAR -->
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" alt="" width="20">
+      <span>Редактировать расчетный показатель</span>
+    </div>
+    <div class="window-button" onclick="window.location.href='indicator-list.html'">×</div>
+  </div>
+
+  <!-- Content -->
+  <div class="window-content">
+    <div id="loading" class="loading">⌛ Загрузка данных...</div>
+
+    <form id="indicatorForm" hidden>
+      <div class="form-group">
+        <label for="date">Дата *</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <div class="form-group">
+        <label for="mzpValue">МЗП *</label>
+        <input type="number" id="mzpValue" name="mzpValue" required>
+      </div>
+
+      <div class="form-group">
+        <label for="mrpValue">МРП *</label>
+        <input type="number" id="mrpValue" name="mrpValue" required>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Описание </label>
+        <input type="text" id="description" placeholder="Описание">
+      </div>
+
+      <div class="button-container">
+        <button type="submit">💾 Сохранить</button>
+        <a href="indicator-list.html" class="button">❌ Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-container"></div>
+<script src="/js/ui-toast.js"></script>
+
+<!-- Page logic -->
+<script>
+  // const API_URL = "http://localhost:8081/api/indicators";
+  const API_URL = '/api/indicators';
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+
+  const form = document.getElementById('indicatorForm');
+  const loading = document.getElementById('loading');
+
+  const dateInput = document.getElementById('date');
+  const mzpValueInput = document.getElementById('mzpValue');
+  const mrpValueInput = document.getElementById('mrpValue');
+  const descriptionInput = document.getElementById('description');
+
+  if (!id) {
+    toast.error('Не передан ID');
+    loading.remove();
+  } else {
+    loadData();
+  }
+
+  async function loadData() {
+    try {
+      const res = await fetch(`${API_URL}/${id}`);
+      if (!res.ok) throw new Error(res.status);
+
+      const data = await res.json();
+
+      dateInput.value = data.date || '';
+      mzpValueInput.value = data.mzpValue || '';
+      mrpValueInput.value = data.mrpValue;
+      descriptionInput.value = data.description;
+
+      loading.remove();
+      form.hidden = false;
+
+    } catch (err) {
+      console.error(err);
+      loading.remove();
+      toast.error('Ошибка загрузки данных');
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      date: dateInput.value,
+      mzpValue: mzpValueInput.value,
+      mrpValue: mrpValueInput.value,
+      description: descriptionInput.value.trim()
+    };
+
+    if (!payload.date || !payload.mzpValue
+      || !payload.mrpValue || !payload.description) {
+      toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    try {
+      toast.info('Сохранение...');
+
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error(res.status);
+
+      toast.success('Изменения сохранены');
+
+      setTimeout(() => {
+        location.href = 'indicator-list.html';
+      }, 800);
+    } catch (err) {
+      console.error(err);
+      toast.error('Ошибка сохранения');
+    }
+  });
+</script>
+
+<script src="/js/ui-draggable.js"></script>
+</body>
+</html>

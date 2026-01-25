@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Список расчетных показателей</title>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/search.css">
+  <link rel="stylesheet" href="/css/list.css">
+  <link rel="stylesheet" href="/css/table.css">
+</head>
+
+<body>
+<div class="desktop">
+
+  <div class="main-window">
+
+    <!-- TITLEBAR -->
+    <div class="window-titlebar">
+      <div class="window-title">
+        <img src="https://win98icons.alexmeub.com/icons/png/users-4.png" width="20">
+        <span>Список расчетных показателей</span>
+      </div>
+      <div class="window-button" onclick="location.href='indicator.html'">×</div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <a href="indicator-create.html" class="toolbar-button">
+        ➕ Добавить
+      </a>
+      <!-- ✅ SEARCH -->
+      <div class="search-container">
+        <span style="font-size: 10px; color: #000;">Поиск ID:</span>
+        <input type="number" id="searchInput" placeholder="ID">
+        <button class="toolbar-button" onclick="searchIndicator()">🔍 Найти</button>
+        <button class="toolbar-button" onclick="clearSearch()">✖ Очистить</button>
+      </div>
+    </div>
+    <div id="message"></div>
+
+    <!-- CONTENT -->
+    <div class="window-content">
+      <div class="table-scope">
+        <table>
+          <thead>
+          <tr>
+            <th style="width:120px">ID</th>
+            <th>Дата</th>
+            <th>МЗП</th>
+            <th>МРП</th>
+            <th>Описание</th>
+            <th style="width:220px">Действия</th>
+          </tr>
+          </thead>
+
+          <tbody id="indicatorTableBody">
+          <tr>
+            <td colspan="6" class="loading">Загрузка...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // const API_URL = "http://localhost:8081/api/indicators";
+  const API_URL = '/api/indicators';
+  let allIndicators = [];
+
+  // Load indicators
+  async function loadIndicators() {
+    const tbody = document.getElementById('indicatorTableBody');
+    const messageDiv = document.getElementById('message');
+
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      allIndicators = data;
+      displayIndicators(data);
+    } catch (error) {
+      console.error('Ошибка при загрузке данных:', error);
+      tbody.innerHTML = '<tr><td colspan="6" class="error">Ошибка загрузки данных</td></tr>';
+      messageDiv.innerHTML = `<div class="message error">Ошибка: ${error.message}</div>`;
+    }
+  }
+
+  function displayIndicators(indicators) {
+    const tbody = document.getElementById('indicatorTableBody');
+    tbody.innerHTML = '';
+
+    if (indicators.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6">Нет данных</td></tr>';
+      return;
+    }
+
+    indicators.forEach((ind) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+          <td>${ind.id}</td>
+          <td>${ind.date}</td>
+          <td>${ind.mzpValue}</td>
+          <td>${ind.mrpValue}</td>
+          <td>${ind.description}</td>
+          <td>
+            <div class="actions">
+              <button onclick="editIndicator(${ind.id})">✏ EDIT</button>
+              <button class="delete" onclick="deleteIndicator(${ind.id})">🗑 DEL</button>
+            </div>
+          </td>
+        `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function searchIndicator() {
+    const searchInput = document.getElementById('searchInput');
+    const searchId = parseInt(searchInput.value);
+    const messageDiv = document.getElementById('message');
+
+    if (!searchId || isNaN(searchId)) {
+      messageDiv.innerHTML = '<div class="message error">Введите корректный ID</div>';
+      setTimeout(() => messageDiv.innerHTML = '', 2000);
+      return;
+    }
+
+    const filteredIndicators = allIndicators.filter(ind => ind.id === searchId);
+
+    if (filteredIndicators.length === 0) {
+      messageDiv.innerHTML = '<div class="message error">Расчетный показатель не найден</div>';
+      displayIndicators([]);
+    } else {
+      messageDiv.innerHTML = '';
+      displayIndicators(filteredIndicators);
+    }
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('message').innerHTML = '';
+    displayIndicators(allIndicators);
+  }
+
+  function editIndicator(id) {
+    window.location.href = `indicator-edit.html?id=${id}`;
+  }
+
+  async function deleteIndicator(id) {
+    if (!confirm(`Удалить расчетный показатель?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = '<div class="message success">Расчетный показатель удален!</div>';
+
+      setTimeout(() => {
+        messageDiv.innerHTML = '';
+        loadIndicators();
+      }, 1500);
+    } catch (error) {
+      console.error('Ошибка при удалении:', error);
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = `<div class="message error">Ошибка: ${error.message}</div>`;
+    }
+  }
+
+  // Load on page load
+  window.addEventListener('DOMContentLoaded', loadIndicators);
+
+  // Search on Enter
+  document.getElementById('searchInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      searchIndicator();
+    }
+  });
+</script>
+<script src="/js/ui-draggable.js"></script>
+</body>
+</html>
