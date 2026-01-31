@@ -83,7 +83,7 @@
     const messageDiv = document.getElementById('message');
 
     try {
-      const response = await fetch(API_URL);
+      const response = await apiFetch(API_URL);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -165,7 +165,7 @@
     }
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await apiFetch(`${API_URL}/${id}`, {
         method: 'DELETE'
       });
 
