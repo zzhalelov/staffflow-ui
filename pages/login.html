@@ -37,7 +37,7 @@
     const data = await response.json();
 
     // ожидаем: { accessToken: "..." }
-    localStorage.setItem('access_token', data.accessToken);
+    localStorage.setItem('access_token', data.token);
 
     window.location.replace('/index.html');
   });
