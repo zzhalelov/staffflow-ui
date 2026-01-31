@@ -11,6 +11,6 @@
   }
 
   if (token && isLoginPage) {
-    window.location.replace('/index.html');
+    window.location.replace('/');
   }
 })();
