@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Изменить статус трудового договора</title>
+  <script src="/js/auth.js"></script>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,7 +93,7 @@
 
   async function loadContract() {
     try {
-      const res = await fetch(`${CONTRACTS_API}/${contractId}`);
+      const res = await apiFetch(`${CONTRACTS_API}/${contractId}`);
       if (!res.ok) throw new Error(res.status);
 
       const data = await res.json();
@@ -123,7 +124,7 @@
     try {
       toast.info('Обновление статуса...');
 
-      const res = await fetch(
+      const res = await apiFetch(
         `${CONTRACTS_API}/${contractId}/status?status=${status}`,
         {method: 'PATCH'}
       );

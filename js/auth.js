@@ -8,7 +8,7 @@ async function apiFetch(url, options = {}) {
     'Content-Type': 'application/json'
   };
 
-  const response = await fetch(url, {
+  const response = await apiFetch(url, {
     ...options,
     headers
   });

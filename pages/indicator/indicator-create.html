@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Добавить расчетный показатель</title>
+  <script src="/js/auth.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,7 +91,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const response = await fetch(API_URL, {
+      const response = await apiFetch(API_URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

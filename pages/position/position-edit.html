@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Редактировать должность</title>
+  <script src="/js/auth.js"></script>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,7 +120,7 @@
   }
 
   async function loadEarningTypes() {
-    const res = await fetch(EARNING_API);
+    const res = await apiFetch(EARNING_API);
     earningTypes = await res.json();
 
     earningTypeSelect.innerHTML = '<option value="">— вид начисления —</option>';
@@ -129,7 +130,7 @@
   }
 
   async function loadPosition() {
-    const res = await fetch(`${POSITIONS_API}/${positionId}`);
+    const res = await apiFetch(`${POSITIONS_API}/${positionId}`);
     if (!res.ok) throw new Error(res.status);
 
     const data = await res.json();
@@ -209,7 +210,7 @@
     try {
       toast.info('Сохранение...');
 
-      const res = await fetch(`${POSITIONS_API}/${positionId}`, {
+      const res = await apiFetch(`${POSITIONS_API}/${positionId}`, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({

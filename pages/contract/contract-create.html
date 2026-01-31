@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Добавить трудовой договор</title>
+  <script src="/js/auth.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +98,7 @@
   let positions = [];
 
   async function loadOrganizations() {
-    const res = await fetch(ORGANIZATIONS_API);
+    const res = await apiFetch(ORGANIZATIONS_API);
     organizations = await res.json();
 
     organizationSelect.innerHTML = '<option value="">— выберите —</option>';
@@ -111,7 +112,7 @@
   }
 
   async function loadEmployees() {
-    const res = await fetch(EMPLOYEES_API);
+    const res = await apiFetch(EMPLOYEES_API);
     employees = await res.json();
 
     employeeSelect.innerHTML = '<option value="">— выберите —</option>';
@@ -125,7 +126,7 @@
   }
 
   async function loadDepartments() {
-    const res = await fetch(DEPARTMENTS_API);
+    const res = await apiFetch(DEPARTMENTS_API);
     departments = await res.json();
 
     departmentSelect.innerHTML = '<option value="">— выберите —</option>';
@@ -139,7 +140,7 @@
   }
 
   async function loadPositions() {
-    const res = await fetch(POSITIONS_API);
+    const res = await apiFetch(POSITIONS_API);
     positions = await res.json();
 
     positionSelect.innerHTML = '<option value="">— выберите —</option>';
@@ -178,7 +179,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const res = await fetch(CONTRACTS_API, {
+      const res = await apiFetch(CONTRACTS_API, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

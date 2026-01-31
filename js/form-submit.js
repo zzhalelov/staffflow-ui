@@ -6,7 +6,7 @@ async function submitForm({
                           }) {
   try {
     toast.info('Отправка данных...');
-    const res = await fetch(api, {
+    const res = await apiFetch(api, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload)

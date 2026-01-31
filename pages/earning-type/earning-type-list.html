@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Список видов начислений</title>
+  <script src="/js/auth.js"></script>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,7 +85,7 @@
     const messageDiv = document.getElementById('message');
 
     try {
-      const response = await fetch(API_URL);
+      const response = await apiFetch(API_URL);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -168,7 +169,7 @@
     }
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await apiFetch(`${API_URL}/${id}`, {
         method: 'DELETE'
       });
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Добавить должность</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/js/auth.js"></script>
 
   <!-- Pixel-шрифт -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,7 +94,7 @@
   let scheduledItems = [];
 
   async function loadEarningTypes() {
-    const res = await fetch(EARNING_TYPES_API);
+    const res = await apiFetch(EARNING_TYPES_API);
     earningTypes = await res.json();
 
     earningTypeSelect.innerHTML = '<option value="">— выберите —</option>';
@@ -164,7 +165,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const res = await fetch(POSITIONS_API, {
+      const res = await apiFetch(POSITIONS_API, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
