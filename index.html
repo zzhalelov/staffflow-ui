@@ -504,7 +504,10 @@
       <span>Настройки</span>
     </div>
     <div class="start-menu-separator"></div>
-    <div class="start-menu-item" onclick="if(confirm('Выйти из системы?')) window.location.reload();">
+    <div class="start-menu-item" onclick="if (confirm('Выйти из системы?')) {
+      localStorage.removeItem('access_token');
+      window.location.replace('/login.html');
+    }">
       <img src="https://win98icons.alexmeub.com/icons/png/key_win-0.png" alt="">
       <span>Выход</span>
     </div>
