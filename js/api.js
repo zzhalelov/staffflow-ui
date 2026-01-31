@@ -14,7 +14,7 @@ async function apiFetch(url, options = {}) {
 
   // если backend вернул 401 — разлогиниваем
   if (response.status === 401) {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('token');
     window.location.replace('/login.html');
     throw new Error('Unauthorized');
   }

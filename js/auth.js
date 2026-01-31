@@ -1,5 +1,5 @@
 (function () {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('token');
   const path = window.location.pathname;
   const isLoginPage = path.endsWith('/login.html');
 
