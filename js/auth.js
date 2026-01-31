@@ -1,17 +1,16 @@
 (function () {
   const token = localStorage.getItem('access_token');
+  const path = window.location.pathname;
+  const isLoginPage = path.endsWith('/login.html');
 
-  // если мы на странице логина
-  const isLoginPage = window.location.pathname.includes('login.html');
+  console.log('auth.js', {token, path});
 
-  // нет токена → на логин
   if (!token && !isLoginPage) {
     window.location.replace('/login.html');
     return;
   }
 
-  // есть токен и мы на логине → в систему
   if (token && isLoginPage) {
-    window.location.replace('/');
+    window.location.replace('/index.html');
   }
 })();
