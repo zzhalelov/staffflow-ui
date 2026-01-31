@@ -1,5 +1,4 @@
-<script>
-  (function () {
+(function () {
   const token = localStorage.getItem('access_token');
 
   // если мы на странице логина
@@ -7,13 +6,12 @@
 
   // нет токена → на логин
   if (!token && !isLoginPage) {
-  window.location.replace('/login.html');
-  return;
-}
+    window.location.replace('/login.html');
+    return;
+  }
 
   // есть токен и мы на логине → в систему
   if (token && isLoginPage) {
-  window.location.replace('/');
-}
+    window.location.replace('/');
+  }
 })();
-</script>
