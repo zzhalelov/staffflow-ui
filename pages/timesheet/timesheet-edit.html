@@ -105,6 +105,8 @@
     const res = await apiFetch(`${API}/${timesheetId}`);
     timesheet = await res.json();
 
+    console.log('TIMESHEET', timesheet);
+
     renderTable();
     await loadEmployees();
   }
@@ -181,14 +183,16 @@
     const select = document.getElementById('employeeSelect');
     select.innerHTML = '<option value="">— выберите —</option>';
 
-    const addedIds = (timesheet.entries || []).map(e => e.employee.id);
+    const addedIds =
+      (timesheet.entries || []).map(e => e.employee.id);
 
     allEmployees
       .filter(e => !addedIds.includes(e.id))
       .forEach(e => {
         const option = document.createElement('option');
         option.value = e.id;
-        option.textContent = e.fullName;
+        option.textContent =
+          `${e.lastName} ${e.firstName}`; // ✅
         select.appendChild(option);
       });
   }
@@ -250,7 +254,6 @@
   }
 
   /* ===================== INIT ===================== */
-  console.log('TIMESHEET', timesheet);
   loadTimesheet();
 </script>
 
