@@ -25,6 +25,7 @@
       border-collapse: collapse;
       font-size: 10px;
       color: #000;
+      min-width: 1200px;
     }
 
     th, td {
@@ -32,6 +33,11 @@
       padding: 4px;
       text-align: center;
       color: #000;
+    }
+
+    .table-scope {
+      overflow-x: auto;
+      max-width: 100%;
     }
 
     td.day {
@@ -81,7 +87,9 @@
     </div>
 
     <!-- TABLE -->
-    <table id="timesheetTable"></table>
+    <div class="table-scope">
+      <table id="timesheetTable"></table>
+    </div>
 
   </div>
 </div>
