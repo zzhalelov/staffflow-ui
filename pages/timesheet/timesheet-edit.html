@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Табель</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/js/auth.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
+
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 4px;
+      text-align: center;
+    }
+
+    td.day {
+      cursor: pointer;
+    }
+
+    .WORK {
+      background: #4caf50;
+    }
+
+    .DAY_OFF {
+      background: #888;
+    }
+
+    .SICK {
+      background: #ff9800;
+    }
+
+    .VACATION {
+      background: #03a9f4;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="main-window">
+  <!-- TITLEBAR -->
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="/icons/calendar.png" alt="">
+      <span>Табель</span>
+    </div>
+    <div class="window-button" onclick="history.back()">×</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="window-content">
+
+    <!-- ADD EMPLOYEE -->
+    <div class="form-group" style="display:flex; gap:8px; align-items:end">
+      <div style="flex:1">
+        <label for="employeeSelect">Добавить сотрудника</label>
+        <select id="employeeSelect"></select>
+      </div>
+      <button type="button" onclick="addEmployee()">➕</button>
+    </div>
+
+    <!-- TABLE -->
+    <table id="timesheetTable"></table>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-container"></div>
+<script src="/js/ui-toast.js"></script>
+
+<script>
+  const API = '/api/timesheets';
+  const EMPLOYEES_API = '/api/employees';
+  const STATUSES = ['WORK', 'DAY_OFF', 'SICK', 'VACATION'];
+
+  const timesheetId =
+    new URLSearchParams(location.search).get('id');
+
+  let timesheet;
+  let allEmployees = [];
+
+  /* ===================== LOAD ===================== */
+
+  async function loadTimesheet() {
+    const res = await apiFetch(`${API}/${timesheetId}`);
+    timesheet = await res.json();
+
+    renderTable();
+    await loadEmployees();
+  }
+
+  async function loadEmployees() {
+    const organizationId =
+      timesheet.organizationId ??
+      timesheet.organization?.id;
+
+    if (!organizationId) return;
+
+    const res = await apiFetch(
+      `${EMPLOYEES_API}?organizationId=${organizationId}`
+    );
+    allEmployees = await res.json();
+    renderEmployeeSelect();
+  }
+
+  /* ===================== RENDER ===================== */
+
+  function daysInMonth(month, year) {
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  function renderTable() {
+    const table = document.getElementById('timesheetTable');
+    table.innerHTML = '';
+
+    const monthIndex = new Date(
+      `${timesheet.year}-${timesheet.month}-01`
+    ).getMonth();
+
+    const days = daysInMonth(monthIndex, timesheet.year);
+
+    // HEADER
+    const head = document.createElement('tr');
+    head.innerHTML = '<th>Сотрудник</th>';
+    for (let d = 1; d <= days; d++) {
+      head.innerHTML += `<th>${d}</th>`;
+    }
+    table.appendChild(head);
+
+    // ROWS
+    timesheet.employees.forEach(emp => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${emp.fullName}</td>`;
+
+      for (let d = 1; d <= days; d++) {
+        const status = emp.days?.[d] || '';
+        const td = document.createElement('td');
+
+        td.className = `day ${status}`;
+        td.textContent = status ? status[0] : '';
+        td.onclick = () => changeStatus(emp.id, d, td);
+
+        tr.appendChild(td);
+      }
+
+      table.appendChild(tr);
+    });
+  }
+
+  function renderEmployeeSelect() {
+    const select = document.getElementById('employeeSelect');
+    select.innerHTML = '<option value="">— выберите —</option>';
+
+    const addedIds = timesheet.employees.map(e => e.id);
+
+    allEmployees
+      .filter(e => !addedIds.includes(e.id))
+      .forEach(e => {
+        const option = document.createElement('option');
+        option.value = e.id;
+        option.textContent = e.fullName;
+        select.appendChild(option);
+      });
+  }
+
+  /* ===================== ACTIONS ===================== */
+
+  async function changeStatus(employeeId, day, cell) {
+    const current = STATUSES.findIndex(s =>
+      cell.classList.contains(s)
+    );
+
+    const nextStatus = current === -1
+      ? STATUSES[0]
+      : STATUSES[(current + 1) % STATUSES.length];
+
+    try {
+      await apiFetch(
+        `${API}/${timesheetId}/employee/${employeeId}/day` +
+        `?dayOfMonth=${day}&status=${nextStatus}`,
+        {method: 'POST'}
+      );
+
+      cell.className = `day ${nextStatus}`;
+      cell.textContent = nextStatus[0];
+
+    } catch {
+      toast.error('Ошибка сохранения');
+    }
+  }
+
+  async function addEmployee() {
+    const select = document.getElementById('employeeSelect');
+    const employeeId = select.value;
+
+    if (!employeeId) {
+      toast.error('Выберите сотрудника');
+      return;
+    }
+
+    try {
+      toast.info('Добавление сотрудника...');
+
+      const res = await apiFetch(
+        `${API}/${timesheetId}/employee?employeeId=${employeeId}`,
+        {method: 'POST'}
+      );
+
+      if (!res.ok) throw new Error();
+
+      timesheet = await res.json();
+
+      toast.success('Сотрудник добавлен');
+      renderTable();
+      renderEmployeeSelect();
+
+    } catch {
+      toast.error('Ошибка при добавлении сотрудника');
+    }
+  }
+
+  /* ===================== INIT ===================== */
+
+  loadTimesheet();
+</script>
+
+<script src="/js/ui-draggable.js"></script>
+</body>
+</html>

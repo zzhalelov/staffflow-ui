@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Табель учет рабочего времени</title>
+    <script src="/js/auth.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/form.css">
+</head>
+<body>
+<div class="main-window window-form">
+  <!-- TITLEBAR -->
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="/icons/folder.png" alt="">
+      <span>Добавить табель</span>
+    </div>
+    <div
+      class="window-button"
+      onclick="location.href='timesheet-list.html'"
+    >×
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="window-content">
+    <form id="timesheetForm">
+
+      <div class="form-group">
+        <label for="organizationSelect">Организация *</label>
+        <select id="organizationSelect" required></select>
+      </div>
+
+      <div class="form-group">
+        <label for="monthSelect">Месяц *</label>
+        <select id="monthSelect" required></select>
+      </div>
+
+      <div class="form-group">
+        <label for="year">Год *</label>
+        <input type="number" id="year" min="2000" max="2100" required>
+      </div>
+
+      <div class="button-container">
+        <button type="submit">💾 Создать</button>
+        <a href="timesheet-list.html" class="button">❌ Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Toast -->
+<script src="/js/ui-toast.js"></script>
+
+<!-- Page logic -->
+<script>
+  // const TIMESHEETS_API = "http://localhost:8081/api/timesheets";
+  // const ORGANIZATIONS_API = "http://localhost:8081/api/organizations";
+  const ORGANIZATIONS_API = '/api/organizations';
+  const TIMESHEETS_API = '/api/timesheets';
+
+  const form = document.getElementById('timesheetForm')
+  const organizationSelect = document.getElementById('organizationSelect');
+  const monthSelect = document.getElementById('monthSelect');
+  const yearInput = document.getElementById('year');
+
+  let organizations = [];
+  let employees = [];
+
+  const MONTHS = [
+    {value: 'JANUARY', name: 'Январь'},
+    {value: 'FEBRUARY', name: 'Февраль'},
+    {value: 'MARCH', name: 'Март'},
+    {value: 'APRIL', name: 'Апрель'},
+    {value: 'MAY', name: 'Май'},
+    {value: 'JUNE', name: 'Июнь'},
+    {value: 'JULY', name: 'Июль'},
+    {value: 'AUGUST', name: 'Август'},
+    {value: 'SEPTEMBER', name: 'Сентябрь'},
+    {value: 'OCTOBER', name: 'Октябрь'},
+    {value: 'NOVEMBER', name: 'Ноябрь'},
+    {value: 'DECEMBER', name: 'Декабрь'}
+  ];
+
+  async function loadOrganizations() {
+    const res = await apiFetch(ORGANIZATIONS_API);
+    organizations = await res.json();
+
+    organizationSelect.innerHTML = '<option value="">— выберите —</option>';
+
+    organizations.forEach(org => {
+      const option = document.createElement('option');
+      option.value = org.id;
+      option.textContent = `${org.shortName} (${org.idNumber})`;
+      organizationSelect.appendChild(option);
+    });
+  }
+
+  async function loadMonths() {
+    monthSelect.innerHTML = '<option value="">— выберите —</option>';
+
+    MONTHS.forEach(m => {
+      const option = document.createElement('option');
+      option.value = m.value;
+      option.textContent = m.name;
+      monthSelect.appendChild(option);
+    });
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const organizationId = organizationSelect.value;
+    const month = monthSelect.value;
+    const year = yearInput.value;
+
+    if (!organizationId || !month || !year) {
+      toast.error('Заполните все обязательные поля');
+      return;
+    }
+
+    try {
+      toast.info('Создание табеля...');
+
+      const url =
+        `${TIMESHEETS_API}?organizationId=${organizationId}&month=${month}&year=${year}`;
+
+      const res = await apiFetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+      });
+
+      if (!res.ok) throw new Error(res.status);
+
+      toast.success('Табель учета рабочего времени создан');
+
+      setTimeout(() => {
+        location.href = 'timesheet-list.html';
+      }, 800);
+    } catch (err) {
+      console.error(err);
+      toast.error('Ошибка при создании трудового договора');
+    }
+  });
+
+  //по умолчанию установим текущий год
+  yearInput.value = new Date().getFullYear();
+  loadOrganizations();
+  loadMonths();
+</script>
+<!-- UI helpers -->
+<script src="/js/ui-draggable.js"></script>
+</body>
+</html>
