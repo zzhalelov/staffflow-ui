@@ -133,31 +133,40 @@
     const table = document.getElementById('timesheetTable');
     table.innerHTML = '';
 
+    if (!timesheet || !timesheet.entries) return;
+
     const monthIndex = new Date(
       `${timesheet.year}-${timesheet.month}-01`
     ).getMonth();
 
-    const days = daysInMonth(monthIndex, timesheet.year);
+    const daysInMonthCount =
+      new Date(timesheet.year, monthIndex + 1, 0).getDate();
 
-    // HEADER
+    /* HEADER */
     const head = document.createElement('tr');
     head.innerHTML = '<th>Сотрудник</th>';
-    for (let d = 1; d <= days; d++) {
+    for (let d = 1; d <= daysInMonthCount; d++) {
       head.innerHTML += `<th>${d}</th>`;
     }
     table.appendChild(head);
 
-    // ROWS
-    (timesheet.entries || []).forEach(entry => {
+    /* ROWS */
+    timesheet.entries.forEach(entry => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${entry.employee.fullName}</td>`;
 
-      for (let d = 1; d <= days; d++) {
-        const status = entry.days?.[d] || '';
+      const fullName =
+        `${entry.employee.lastName} ${entry.employee.firstName}`;
+
+      tr.innerHTML = `<td>${fullName}</td>`;
+
+      for (let d = 1; d <= daysInMonthCount; d++) {
+        const dayObj = entry.days.find(day => day.dayNumber === d);
+        const status = dayObj?.status || '';
+
         const td = document.createElement('td');
-
         td.className = `day ${status}`;
         td.textContent = status ? status[0] : '';
+
         td.onclick = () =>
           changeStatus(entry.employee.id, d, td);
 
@@ -187,17 +196,17 @@
   /* ===================== ACTIONS ===================== */
 
   async function changeStatus(employeeId, day, cell) {
-    const current = STATUSES.findIndex(s =>
+    const currentIndex = STATUSES.findIndex(s =>
       cell.classList.contains(s)
     );
 
-    const nextStatus = current === -1
+    const nextStatus = currentIndex === -1
       ? STATUSES[0]
-      : STATUSES[(current + 1) % STATUSES.length];
+      : STATUSES[(currentIndex + 1) % STATUSES.length];
 
     try {
       await apiFetch(
-        `${API}/${timesheetId}/employee/${employeeId}/day` +
+        `/api/timesheets/${timesheetId}/employee/${employeeId}/day` +
         `?dayOfMonth=${day}&status=${nextStatus}`,
         {method: 'POST'}
       );
