@@ -148,17 +148,18 @@
     table.appendChild(head);
 
     // ROWS
-    timesheet.employees.forEach(emp => {
+    (timesheet.entries || []).forEach(entry => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${emp.fullName}</td>`;
+      tr.innerHTML = `<td>${entry.employee.fullName}</td>`;
 
       for (let d = 1; d <= days; d++) {
-        const status = emp.days?.[d] || '';
+        const status = entry.days?.[d] || '';
         const td = document.createElement('td');
 
         td.className = `day ${status}`;
         td.textContent = status ? status[0] : '';
-        td.onclick = () => changeStatus(emp.id, d, td);
+        td.onclick = () =>
+          changeStatus(entry.employee.id, d, td);
 
         tr.appendChild(td);
       }
@@ -171,7 +172,7 @@
     const select = document.getElementById('employeeSelect');
     select.innerHTML = '<option value="">— выберите —</option>';
 
-    const addedIds = timesheet.employees.map(e => e.id);
+    const addedIds = (timesheet.entries || []).map(e => e.employee.id);
 
     allEmployees
       .filter(e => !addedIds.includes(e.id))
@@ -240,7 +241,7 @@
   }
 
   /* ===================== INIT ===================== */
-
+  console.log('TIMESHEET', timesheet);
   loadTimesheet();
 </script>
 
