@@ -9,10 +9,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <!-- Base styles -->
   <link rel="stylesheet" href="/css/base.css">
@@ -20,7 +17,7 @@
   <link rel="stylesheet" href="/css/form.css">
 
   <style>
-    /* ==== OVERRIDE WIN98 LAYOUT LIMITS ==== */
+    /* ===== FIX WIN98 OVERFLOW ===== */
     .main-window {
       overflow: visible !important;
     }
@@ -30,7 +27,7 @@
       overflow-y: visible;
     }
 
-    /* ==== TABLE SCROLL ==== */
+    /* ===== TABLE ===== */
     .table-scope {
       overflow-x: auto;
       max-width: 100%;
@@ -40,46 +37,49 @@
       border-collapse: collapse;
       font-size: 10px;
       color: #000;
-      min-width: 1600px; /* 🔥 чтобы 31 день точно влез */
+      min-width: 1700px;
     }
 
     th, td {
       border: 1px solid #444;
       padding: 4px;
       text-align: center;
-      color: #000;
       white-space: nowrap;
+      color: #000;
     }
 
-    /* ==== STICKY EMPLOYEE COLUMN ==== */
+    /* ===== STICKY EMPLOYEE COLUMN ===== */
     th:first-child,
     td:first-child {
       position: sticky;
       left: 0;
       background: #fff;
       z-index: 3;
-      min-width: 140px;
+      min-width: 150px;
+      text-align: left;
     }
 
-    td.day {
+    /* ===== CHECKBOX ===== */
+    td input[type="checkbox"] {
+      transform: scale(1.2);
       cursor: pointer;
     }
 
-    /* ==== DAY STATUSES ==== */
-    .WORK {
-      background: #4caf50;
+    /* ===== STATUSES ===== */
+    td.DAY_OFF {
+      background: #bdbdbd;
     }
 
-    .DAY_OFF {
-      background: #9e9e9e;
+    td.WORK {
+      background: #c8e6c9;
     }
 
-    .SICK {
-      background: #ff9800;
-    }
-
-    .VACATION {
-      background: #03a9f4;
+    /* ===== TOTAL COLUMN ===== */
+    th:last-child,
+    td:last-child {
+      font-weight: bold;
+      background: #eee;
+      min-width: 50px;
     }
   </style>
 </head>
@@ -123,7 +123,6 @@
 <script>
   const API = '/api/timesheets';
   const EMPLOYEES_API = '/api/employees';
-  const STATUSES = ['WORK', 'DAY_OFF', 'SICK', 'VACATION'];
 
   const timesheetId =
     new URLSearchParams(location.search).get('id');
@@ -156,7 +155,7 @@
     renderEmployeeSelect();
   }
 
-  /* ================= AUTOFILL WEEKENDS ================= */
+  /* ================= WEEKENDS ================= */
 
   function isWeekend(year, monthIndex, day) {
     const d = new Date(year, monthIndex, day).getDay();
@@ -191,6 +190,18 @@
     }
   }
 
+  /* ================= SAVE WORK DAY ================= */
+
+  async function setWorkDay(employeeId, day, checked) {
+    const status = checked ? 'WORK' : 'DAY_OFF';
+
+    await apiFetch(
+      `${API}/${timesheetId}/employee/${employeeId}/day` +
+      `?dayOfMonth=${day}&status=${status}`,
+      {method: 'POST'}
+    );
+  }
+
   /* ================= RENDER ================= */
 
   function renderTable() {
@@ -212,11 +223,14 @@
     for (let d = 1; d <= daysCount; d++) {
       head.innerHTML += `<th>${d}</th>`;
     }
+    head.innerHTML += '<th>Итого</th>';
     table.appendChild(head);
 
     /* ROWS */
     timesheet.entries.forEach(entry => {
       entry.days = entry.days || [];
+
+      let total = 0;
 
       const tr = document.createElement('tr');
       tr.innerHTML =
@@ -224,17 +238,36 @@
 
       for (let d = 1; d <= daysCount; d++) {
         const day = entry.days.find(x => x.dayNumber === d);
-        const status = day?.status || '';
+        const status = day?.status;
 
         const td = document.createElement('td');
-        td.className = `day ${status}`;
-        td.textContent = status ? status[0] : '';
+        td.className = status || '';
 
-        td.onclick = () =>
-          changeStatus(entry.employee.id, d, td);
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = status === 'WORK';
 
+        if (status === 'WORK') total++;
+
+        checkbox.onchange = async () => {
+          await setWorkDay(entry.employee.id, d, checkbox.checked);
+
+          entry.days = entry.days.filter(x => x.dayNumber !== d);
+          entry.days.push({
+            dayNumber: d,
+            status: checkbox.checked ? 'WORK' : 'DAY_OFF'
+          });
+
+          renderTable();
+        };
+
+        td.appendChild(checkbox);
         tr.appendChild(td);
       }
+
+      const totalTd = document.createElement('td');
+      totalTd.textContent = total;
+      tr.appendChild(totalTd);
 
       table.appendChild(tr);
     });
@@ -257,25 +290,7 @@
       });
   }
 
-  /* ================= ACTIONS ================= */
-
-  async function changeStatus(employeeId, day, cell) {
-    const i = STATUSES.findIndex(s =>
-      cell.classList.contains(s)
-    );
-
-    const next =
-      i === -1 ? STATUSES[0] : STATUSES[(i + 1) % STATUSES.length];
-
-    await apiFetch(
-      `${API}/${timesheetId}/employee/${employeeId}/day` +
-      `?dayOfMonth=${day}&status=${next}`,
-      {method: 'POST'}
-    );
-
-    cell.className = `day ${next}`;
-    cell.textContent = next[0];
-  }
+  /* ================= ADD EMPLOYEE ================= */
 
   async function addEmployee() {
     const id = document.getElementById('employeeSelect').value;
