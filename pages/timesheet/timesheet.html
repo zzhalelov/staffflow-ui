@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Табели учета рабочего времени</title>
+  <script src="/js/auth.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link rel="stylesheet" href="/css/icons.css">
+  <link rel="stylesheet" href="/css/ui-modal.css">
+</head>
+
+<body>
+
+<!-- OVERLAY -->
+<div id="overlay" class="ui-overlay hidden"></div>
+
+<!-- MODAL WINDOW -->
+<div id="timesheetModal" class="modal-window hidden">
+
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="https://win98icons.alexmeub.com/icons/png/users-4.png">
+      <span>C:\Табели учета рабочего времени</span>
+    </div>
+
+    <button class="window-button close" onclick="closeModalAndRedirect()">×</button>
+  </div>
+
+  <div class="window-toolbar">
+    <button class="toolbar-btn" onclick="location.href='timesheet-list.html'">Список</button>
+    <button class="toolbar-btn" onclick="location.href='timesheet-create.html'">Добавить</button>
+  </div>
+
+  <div class="window-content icon-grid">
+    <a class="folder-icon" href="timesheet-list.html">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Список табелей</div>
+    </a>
+
+    <a class="folder-icon" href="timesheet-create.html">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Добавить табель</div>
+    </a>
+
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Архив</div>
+    </a>
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Отчёты</div>
+    </a>
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Импорт / Экспорт</div>
+    </a>
+    <a class="folder-icon" href="#">
+      <div class="folder-image"><img src="https://qomp.club/assets/images/quizzes.png"></div>
+      <div class="folder-label">Настройки</div>
+    </a>
+  </div>
+</div>
+
+<script src="/js/ui-window-manager.js"></script>
+
+<script>
+  // открыть сразу (как системное окно)
+  openModal('timesheetModal');
+  registerWindow('#timesheetModal');
+
+  function openModal(id) {
+    document.getElementById('overlay').classList.remove('hidden');
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('timesheetModal').classList.add('hidden');
+  }
+
+  function closeModalAndRedirect() {
+    closeModal();
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>
