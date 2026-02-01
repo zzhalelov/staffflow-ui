@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Список табелей</title>
+  <script src="/js/auth.js"></script>
+
+  <!-- Pixel font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/window.css">
+  <link rel="stylesheet" href="/css/search.css">
+  <link rel="stylesheet" href="/css/list.css">
+  <link rel="stylesheet" href="/css/table.css">
+</head>
+
+<body>
+
+<div class="desktop">
+  <div class="main-window">
+
+    <!-- TITLEBAR -->
+    <div class="window-titlebar">
+      <div class="window-title">
+        <img
+          src="https://win98icons.alexmeub.com/icons/png/calendar-0.png"
+          width="20"
+        >
+        <span>Список табелей</span>
+      </div>
+      <div class="window-button" onclick="location.href='index.html'">×</div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <a href="timesheet-create.html" class="toolbar-button">
+        ➕ Добавить
+      </a>
+
+      <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+        <span style="font-size:10px;color:#000">Поиск ID:</span>
+        <input type="number" id="searchInput" style="width:120px">
+        <button class="toolbar-button" onclick="search()">🔍</button>
+        <button class="toolbar-button" onclick="reset()">✖</button>
+      </div>
+    </div>
+
+    <div id="message"></div>
+
+    <!-- CONTENT -->
+    <div class="window-content">
+      <div class="table-scope">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Организация</th>
+            <th>Период</th>
+            <th>Сотрудников</th>
+            <th>Действия</th>
+          </tr>
+          </thead>
+          <tbody id="tableBody">
+          <tr>
+            <td colspan="5" class="loading">Загрузка...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = '/api/timesheets';
+  let all = [];
+
+  /* ===============================
+     LOAD
+  =============================== */
+  async function load() {
+    try {
+      const res = await apiFetch(API);
+      if (!res.ok) throw new Error(res.status);
+
+      all = await res.json();
+      render(all);
+
+    } catch (e) {
+      console.error(e);
+      document.getElementById('tableBody').innerHTML =
+        '<tr><td colspan="5">Ошибка загрузки</td></tr>';
+    }
+  }
+
+  /* ===============================
+     RENDER
+  =============================== */
+  function render(list) {
+    const body = document.getElementById('tableBody');
+    body.innerHTML = '';
+
+    if (!list.length) {
+      body.innerHTML = '<tr><td colspan="5">Нет данных</td></tr>';
+      return;
+    }
+
+    list.forEach(ts => {
+      body.appendChild(row(ts));
+    });
+  }
+
+  function row(ts) {
+    const tr = document.createElement('tr');
+
+    const period =
+      `${monthRu(ts.month)} ${ts.year}`;
+
+    const employeesCount =
+      ts.employees ? ts.employees.length : 0;
+
+    tr.innerHTML = `
+      <td>${ts.id}</td>
+      <td>${ts.organizationName ?? '—'}</td>
+      <td>${period}</td>
+      <td>${employeesCount}</td>
+      <td>${actions(ts)}</td>
+    `;
+
+    return tr;
+  }
+
+  /* ===============================
+     ACTIONS
+  =============================== */
+  function actions(ts) {
+    return `
+      <div class="actions">
+        <button onclick="openTimesheet(${ts.id})">
+          ✏ OPEN
+        </button>
+        <button
+          class="delete"
+          onclick="del(${ts.id})"
+        >
+          🗑 DEL
+        </button>
+      </div>
+    `;
+  }
+
+  function openTimesheet(id) {
+    location.href = `timesheet-edit.html?id=${id}`;
+  }
+
+  async function del(id) {
+    if (!confirm(`Удалить табель #${id}?`)) return;
+
+    try {
+      await apiFetch(`${API}/${id}`, {method: 'DELETE'});
+      load();
+    } catch {
+      alert('Ошибка удаления');
+    }
+  }
+
+  /* ===============================
+     SEARCH
+  =============================== */
+  function search() {
+    const id = Number(document.getElementById('searchInput').value);
+    if (!id) return;
+    render(all.filter(t => t.id === id));
+  }
+
+  function reset() {
+    document.getElementById('searchInput').value = '';
+    render(all);
+  }
+
+  /* ===============================
+     UTILS
+  =============================== */
+  function monthRu(month) {
+    const map = {
+      JANUARY: 'Январь',
+      FEBRUARY: 'Февраль',
+      MARCH: 'Март',
+      APRIL: 'Апрель',
+      MAY: 'Май',
+      JUNE: 'Июнь',
+      JULY: 'Июль',
+      AUGUST: 'Август',
+      SEPTEMBER: 'Сентябрь',
+      OCTOBER: 'Октябрь',
+      NOVEMBER: 'Ноябрь',
+      DECEMBER: 'Декабрь'
+    };
+    return map[month] || month;
+  }
+
+  /* ===============================
+     START
+  =============================== */
+  window.addEventListener('DOMContentLoaded', load);
+</script>
+
+<script src="/js/ui-draggable.js"></script>
+</body>
+</html>
