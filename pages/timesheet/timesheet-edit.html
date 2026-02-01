@@ -18,68 +18,61 @@
 
   <style>
     /* ===== FIX WIN98 OVERFLOW ===== */
-    .main-window {
-      overflow: visible !important;
-    }
-
+    .main-window,
     .window-content {
-      overflow-x: auto !important;
-      overflow-y: visible;
+      overflow: hidden !important;
     }
 
-    /* ===== TABLE ===== */
-    .table-scope {
-      overflow-x: auto;
-      max-width: 100%;
-    }
-
+    /* ===== TABLE (NO SCROLL, COMPACT) ===== */
     table {
+      width: 100%;
+      table-layout: fixed;
       border-collapse: collapse;
-      font-size: 10px;
+      font-size: 9px;
       color: #000;
-      min-width: 1700px;
     }
 
     th, td {
       border: 1px solid #444;
-      padding: 4px;
+      padding: 1px;
       text-align: center;
       white-space: nowrap;
-      color: #000;
     }
 
-    /* ===== STICKY EMPLOYEE COLUMN ===== */
     th:first-child,
     td:first-child {
-      position: sticky;
-      left: 0;
-      background: #fff;
-      z-index: 3;
-      min-width: 150px;
+      width: 140px;
       text-align: left;
+      font-weight: bold;
+      padding-left: 4px;
+    }
+
+    th:not(:first-child),
+    td:not(:first-child) {
+      width: 26px;
     }
 
     /* ===== CHECKBOX ===== */
     td input[type="checkbox"] {
-      transform: scale(1.2);
+      transform: scale(0.75);
+      margin: 0;
       cursor: pointer;
     }
 
-    /* ===== STATUSES ===== */
+    /* ===== STATUS COLORS ===== */
     td.DAY_OFF {
-      background: #bdbdbd;
+      background: #c0c0c0;
     }
 
     td.WORK {
       background: #c8e6c9;
     }
 
-    /* ===== TOTAL COLUMN ===== */
     th:last-child,
     td:last-child {
-      font-weight: bold;
       background: #eee;
-      min-width: 50px;
+      font-weight: bold;
+      width: 50px;
     }
   </style>
 </head>
@@ -100,7 +93,7 @@
   <div class="window-content">
 
     <!-- ADD EMPLOYEE -->
-    <div class="form-group" style="display:flex; gap:8px; align-items:end">
+    <div class="form-group" style="display:flex; gap:6px; align-items:end">
       <div style="flex:1">
         <label for="employeeSelect">Добавить сотрудника</label>
         <select id="employeeSelect"></select>
@@ -109,9 +102,7 @@
     </div>
 
     <!-- TABLE -->
-    <div class="table-scope">
-      <table id="timesheetTable"></table>
-    </div>
+    <table id="timesheetTable"></table>
 
   </div>
 </div>
@@ -192,12 +183,10 @@
 
   /* ================= SAVE WORK DAY ================= */
 
-  async function setWorkDay(employeeId, day, checked) {
-    const status = checked ? 'WORK' : 'DAY_OFF';
-
+  async function setWorkDay(employeeId, day, newStatus) {
     await apiFetch(
       `${API}/${timesheetId}/employee/${employeeId}/day` +
-      `?dayOfMonth=${day}&status=${status}`,
+      `?dayOfMonth=${day}&status=${newStatus}`,
       {method: 'POST'}
     );
   }
@@ -229,7 +218,6 @@
     /* ROWS */
     timesheet.entries.forEach(entry => {
       entry.days = entry.days || [];
-
       let total = 0;
 
       const tr = document.createElement('tr');
@@ -238,27 +226,40 @@
 
       for (let d = 1; d <= daysCount; d++) {
         const day = entry.days.find(x => x.dayNumber === d);
-        const status = day?.status;
+        const status = day?.status || 'DAY_OFF';
+
+        if (status === 'WORK') total++;
 
         const td = document.createElement('td');
-        td.className = status || '';
+        td.className = status;
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = status === 'WORK';
 
-        if (status === 'WORK') total++;
+        checkbox.onchange = async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
 
-        checkbox.onchange = async () => {
-          await setWorkDay(entry.employee.id, d, checkbox.checked);
+          const newStatus = checkbox.checked ? 'WORK' : 'DAY_OFF';
 
-          entry.days = entry.days.filter(x => x.dayNumber !== d);
-          entry.days.push({
-            dayNumber: d,
-            status: checkbox.checked ? 'WORK' : 'DAY_OFF'
-          });
+          // ❗ если статус не меняется — ничего не делаем
+          if (status === newStatus) {
+            checkbox.checked = status === 'WORK';
+            return;
+          }
 
-          renderTable();
+          try {
+            await setWorkDay(entry.employee.id, d, newStatus);
+
+            entry.days = entry.days.filter(x => x.dayNumber !== d);
+            entry.days.push({dayNumber: d, status: newStatus});
+
+            renderTable();
+          } catch {
+            toast.error('Ошибка доступа');
+            checkbox.checked = status === 'WORK';
+          }
         };
 
         td.appendChild(checkbox);
