@@ -121,19 +121,16 @@
   function row(ts) {
     const tr = document.createElement('tr');
 
-    const period =
-      `${monthRu(ts.month)} ${ts.year}`;
-
-    const employeesCount =
-      ts.employees ? ts.employees.length : 0;
+    const period = `${monthRu(ts.month)} ${ts.year}`;
+    const employeesCount = ts.entries ? ts.entries.length : 0;
 
     tr.innerHTML = `
-      <td>${ts.id}</td>
-      <td>${ts.organizationName ?? '—'}</td>
-      <td>${period}</td>
-      <td>${employeesCount}</td>
-      <td>${actions(ts)}</td>
-    `;
+    <td>${ts.id}</td>
+    <td>${ts.organization?.name ?? '—'}</td>
+    <td>${period}</td>
+    <td>${employeesCount}</td>
+    <td>${actions(ts)}</td>
+  `;
 
     return tr;
   }
