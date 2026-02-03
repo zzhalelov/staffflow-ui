@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Список должностей</title>
-  <script src="/js/auth.js"></script>
 
   <!-- Pixel font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,8 +69,10 @@
   </div>
 </div>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <script>
-  const API = '/api/positions';
+  // const API = '/api/positions';
   let all = [];
 
   /* ===============================
@@ -79,7 +80,7 @@
   =============================== */
   async function load() {
     try {
-      const res = await apiFetch(API);
+      const res = await apiFetch('/api/positions');
       if (!res.ok) throw new Error(res.status);
       all = await res.json();
       render(all);
@@ -157,7 +158,7 @@
 
   async function del(id, name) {
     if (!confirm(`Удалить "${name}"?`)) return;
-    await apiFetch(`${API}/${id}`, {method: 'DELETE'});
+    await apiFetch(`/api/positions/${id}`, {method: 'DELETE'});
     load();
   }
 

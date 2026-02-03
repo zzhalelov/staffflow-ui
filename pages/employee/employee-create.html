@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Добавить сотрудника - StaffFlow</title>
-  <script src="/js/auth.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,13 +94,12 @@
 
 <!-- Toast -->
 <script src="/js/ui-toast.js"></script>
-
-<script src="js/api.js"></script>
-<script src="js/auth.js"></script>
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Page logic -->
 <script>
   // const API_URL = "http://localhost:8081/api/employees";
-  const API_URL = '/api/employees';
+  // const API_URL = '/api/employees';
   const form = document.getElementById('employeeForm');
 
   form.addEventListener('submit', async (e) => {
@@ -134,7 +132,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const response = await apiFetch(API_URL, {
+      const response = await apiFetch('/api/employees', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

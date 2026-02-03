@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Список подразделений</title>
-  <script src="/js/auth.js"></script>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +35,7 @@
       <a href="department-create.html" class="toolbar-button">
         ➕ Добавить
       </a>
-      <!-- ✅ SEARCH -->
+      <!-- SEARCH -->
       <div class="search-container">
         <span style="font-size: 10px; color: #000;">Поиск ID:</span>
         <input type="number" id="searchInput" placeholder="ID">
@@ -70,15 +69,17 @@
   </div>
 </div>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <script>
   // const API_URL = "http://localhost:8081/api/departments";
-  const API_URL = '/api/departments';
+  // const API_URL = '/api/departments';
   let allDepartments = [];
 
   async function loadDepartments() {
     const tbody = document.getElementById('departmentTableBody');
     try {
-      const response = await apiFetch(API_URL);
+      const response = await apiFetch('/api/departments');
       const data = await response.json();
       allDepartments = data;
       displayDepartments(data);
@@ -129,7 +130,7 @@
 
   async function deleteDepartment(id, name) {
     if (!confirm(`Удалить подразделение "${name}"?`)) return;
-    await apiFetch(`${API_URL}/${id}`, {method: 'DELETE'});
+    await apiFetch(`/api/departments/${id}`, {method: 'DELETE'});
     loadDepartments();
   }
 

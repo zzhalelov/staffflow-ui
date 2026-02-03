@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Список сотрудников</title>
-  <script src="/js/auth.js"></script>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +35,7 @@
       <a href="employee-create.html" class="toolbar-button">
         ➕ Добавить
       </a>
-      <!-- ✅ SEARCH -->
+      <!-- SEARCH -->
       <div class="search-container">
         <span style="font-size: 10px; color: #000;">Поиск ID:</span>
         <input type="number" id="searchInput" placeholder="ID">
@@ -73,9 +72,11 @@
   </div>
 </div>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <script>
   // const API_URL = "http://localhost:8081/api/employees";
-  const API_URL = '/api/employees';
+  // const API_URL = '/api/employees';
   let allEmployees = [];
 
   // Load employees
@@ -84,19 +85,17 @@
     const messageDiv = document.getElementById('message');
 
     try {
-      const response = await apiFetch(API_URL);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
+      const response = await apiFetch('/api/employees');
       const data = await response.json();
+
       allEmployees = data;
       displayEmployees(data);
     } catch (error) {
       console.error('Ошибка при загрузке данных:', error);
-      tbody.innerHTML = '<tr><td colspan="6" class="error">Ошибка загрузки данных</td></tr>';
-      messageDiv.innerHTML = `<div class="message error">Ошибка: ${error.message}</div>`;
+      tbody.innerHTML =
+        '<tr><td colspan="6" class="error">Ошибка загрузки данных</td></tr>';
+      messageDiv.innerHTML =
+        `<div class="message error">Ошибка: ${error.message}</div>`;
     }
   }
 
@@ -166,7 +165,7 @@
     }
 
     try {
-      const response = await apiFetch(`${API_URL}/${id}`, {
+      const response = await apiFetch(`/api/employees/${id}`, {
         method: 'DELETE'
       });
 

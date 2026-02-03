@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Добавить вид начисления</title>
-  <script src="/js/auth.js"></script>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,10 +91,11 @@
 
 <!-- Toast -->
 <script src="/js/ui-toast.js"></script>
-
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Page logic -->
 <script>
-  const API_URL = '/api/earning-types';
+  // const API_URL = '/api/earning-types';
   const form = document.getElementById('earningTypeForm');
 
   form.addEventListener('submit', async (e) => {
@@ -122,7 +122,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const response = await apiFetch(API_URL, {
+      const response = await apiFetch('/api/earning-types', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

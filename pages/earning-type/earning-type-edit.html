@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Редактировать вид начисления</title>
-  <script src="/js/auth.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,9 +81,11 @@
 <div id="toast-container"></div>
 <script src="/js/ui-toast.js"></script>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Page logic -->
 <script>
-  const API_URL = '/api/earning-types';
+  // const API_URL = '/api/earning-types';
 
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
@@ -109,7 +110,7 @@
 
   async function loadData() {
     try {
-      const res = await apiFetch(`${API_URL}/${id}`);
+      const res = await apiFetch(`/api/earning-types/${id}`);
       if (!res.ok) throw new Error(res.status);
 
       const data = await res.json();
@@ -151,7 +152,7 @@
     try {
       toast.info('Сохранение...');
 
-      const res = await apiFetch(`${API_URL}/${id}`, {
+      const res = await apiFetch(`/api/earning-types/${id}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

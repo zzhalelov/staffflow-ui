@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Редактировать должность</title>
-  <script src="/js/auth.js"></script>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,9 +78,11 @@
 <div id="toast-container"></div>
 <script src="/js/ui-toast.js"></script>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Logic -->
 <script>
-  const POSITIONS_API = '/api/positions';
+  // const POSITIONS_API = '/api/positions';
   const EARNING_API = '/api/earning-types';
 
   const params = new URLSearchParams(location.search);
@@ -130,7 +131,7 @@
   }
 
   async function loadPosition() {
-    const res = await apiFetch(`${POSITIONS_API}/${positionId}`);
+    const res = await apiFetch(`/api/positions/${positionId}`);
     if (!res.ok) throw new Error(res.status);
 
     const data = await res.json();
@@ -210,7 +211,7 @@
     try {
       toast.info('Сохранение...');
 
-      const res = await apiFetch(`${POSITIONS_API}/${positionId}`, {
+      const res = await apiFetch(`/api/positions/${positionId}`, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({

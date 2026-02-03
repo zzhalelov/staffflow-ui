@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Добавить должность</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="/js/auth.js"></script>
 
   <!-- Pixel-шрифт -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,10 +79,11 @@
 
 <!-- Toast -->
 <script src="/js/ui-toast.js"></script>
-
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Page logic -->
 <script>
-  const POSITIONS_API = '/api/positions';
+  // const POSITIONS_API = '/api/positions';
   const EARNING_TYPES_API = '/api/earning-types';
 
   const form = document.getElementById('positionForm')
@@ -165,7 +165,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const res = await apiFetch(POSITIONS_API, {
+      const res = await apiFetch('/api/positions', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
