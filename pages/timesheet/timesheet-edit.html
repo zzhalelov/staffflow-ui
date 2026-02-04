@@ -5,70 +5,48 @@
   <title>Табель</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-  <!-- Base styles -->
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/window.css">
   <link rel="stylesheet" href="/css/form.css">
 
   <style>
-    :root {
-      --cell-font: 9px;
-      --checkbox-scale: 0.8;
-      --name-col-width: 140px;
-    }
-
-    .main-window,
-    .window-content {
-      overflow: hidden !important;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      font-size: var(--cell-font);
-      color: #000;
+      font-size: 10px;
     }
 
     th, td {
       border: 1px solid #444;
-      padding: 0;
+      padding: 2px;
       text-align: center;
-      white-space: nowrap;
     }
 
-    th:first-child,
-    td:first-child {
-      width: var(--name-col-width);
+    th.employee, td.employee {
+      width: 140px;
       text-align: left;
-      padding-left: 4px;
+      padding-left: 6px;
+    }
+
+    th.day, td.day {
+      width: 22px;
+    }
+
+    th.total, td.total {
+      width: 40px;
       font-weight: bold;
     }
 
-    th:last-child,
-    td:last-child {
-      width: 48px;
-      background: #eee;
-      font-weight: bold;
+    td.weekend {
+      background: #ccc;
     }
 
-    td input[type="checkbox"] {
-      transform: scale(var(--checkbox-scale));
-      margin: 0;
-      cursor: pointer;
-    }
-
-    td.DAY_OFF {
-      background: #d0d0d0;
-    }
-
-    td.PRESENT {
-      background: #c8e6c9;
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -76,137 +54,84 @@
 <body>
 
 <div class="main-window">
-  <!-- TITLEBAR -->
+  <!-- TITLE -->
   <div class="window-titlebar">
     <div class="window-title">
-      <img src="/icons/calendar.png" alt="">
+      <img src="/icons/calendar.png">
       <span id="title">Табель</span>
     </div>
     <div class="window-button" onclick="history.back()">×</div>
   </div>
 
-  <!-- CONTENT -->
   <div class="window-content">
 
     <!-- ADD EMPLOYEE -->
-    <div class="form-group" style="display:flex; gap:6px; align-items:end">
+    <div class="form-group" style="display:flex; gap:8px; align-items:end">
       <div style="flex:1">
-        <label for="employeeSelect">Добавить сотрудника</label>
+        <label>Добавить сотрудника</label>
         <select id="employeeSelect"></select>
       </div>
-      <button type="button" onclick="addEmployee()">➕</button>
+      <button type="button" onclick="addEmployee()">+</button>
     </div>
 
     <!-- TABLE -->
     <table id="timesheetTable"></table>
 
+    <!-- ACTIONS -->
+    <div class="actions">
+      <button type="button" onclick="saveTimesheet()">Сохранить</button>
+      <button type="button" onclick="history.back()">Отмена</button>
+    </div>
+
   </div>
 </div>
-
-<div id="toast-container"></div>
-<script src="/js/ui-toast.js"></script>
 
 <script src="/js/api.js"></script>
 <script src="/js/auth.js"></script>
 <script>
-  // const API = '/api/timesheets';
-  const EMPLOYEES_API = '/api/employees';
+  const API = '/api/timesheets';
+  const EMP_API = '/api/employees';
 
-  const timesheetId =
-    new URLSearchParams(location.search).get('id');
-
+  const timesheetId = new URLSearchParams(location.search).get('id');
   let timesheet;
-  let allEmployees = [];
+  let changes = {};
 
-  /* ================= ADAPT TABLE ================= */
+  function daysInMonth(y, m) {
+    return new Date(y, m + 1, 0).getDate();
+  }
 
-  function adaptTable(daysCount) {
-    const container =
-      document.querySelector('.window-content').offsetWidth;
-
-    const nameCol = 140;
-    const totalCol = 48;
-
-    const available =
-      container - nameCol - totalCol - 10;
-
-    const cellWidth = Math.floor(available / daysCount);
-
-    const font = cellWidth < 22 ? 8 : 9;
-    const checkboxScale = cellWidth < 22 ? 0.7 : 0.8;
-
-    document.documentElement.style.setProperty('--cell-font', font + 'px');
-    document.documentElement.style.setProperty('--checkbox-scale', checkboxScale);
+  function isWeekend(y, m, d) {
+    const day = new Date(y, m, d).getDay();
+    return day === 0 || day === 6;
   }
 
   /* ================= LOAD ================= */
 
   async function loadTimesheet() {
-    const res = await apiFetch(`/api/timesheets/${timesheetId}`);
+    const res = await apiFetch(`${API}/${timesheetId}`);
     timesheet = await res.json();
 
-    document.getElementById('title').textContent =
+    document.getElementById('title').innerText =
       `Табель — ${timesheet.month} ${timesheet.year}`;
 
-    await autofillWeekends();
     renderTable();
-    await loadEmployees();
+    loadEmployees();
   }
 
   async function loadEmployees() {
-    const orgId = timesheet.organization?.id;
-    if (!orgId) return;
-
     const res = await apiFetch(
-      `${EMPLOYEES_API}?organizationId=${orgId}`
+      `${EMP_API}?organizationId=${timesheet.organization.id}`
     );
-    allEmployees = await res.json();
-    renderEmployeeSelect();
-  }
+    const all = await res.json();
 
-  /* ================= WEEKENDS ================= */
+    const used = timesheet.entries.map(e => e.employee.id);
+    const select = document.getElementById('employeeSelect');
 
-  function isWeekend(year, monthIndex, day) {
-    const d = new Date(year, monthIndex, day).getDay();
-    return d === 0 || d === 6;
-  }
-
-  async function autofillWeekends() {
-    if (!timesheet?.entries) return;
-
-    const monthIndex = new Date(
-      `${timesheet.year}-${timesheet.month}-01`
-    ).getMonth();
-
-    const daysCount =
-      new Date(timesheet.year, monthIndex + 1, 0).getDate();
-
-    for (const entry of timesheet.entries) {
-      entry.days ||= [];
-
-      for (let d = 1; d <= daysCount; d++) {
-        if (!isWeekend(timesheet.year, monthIndex, d)) continue;
-        if (entry.days.some(x => x.dayNumber === d)) continue;
-
-        await apiFetch(
-          `/api/timesheets/${timesheetId}/employee/${entry.employee.id}/day` +
-          `?dayOfMonth=${d}&status=DAY_OFF`,
-          {method: 'POST'}
-        );
-
-        entry.days.push({dayNumber: d, status: 'DAY_OFF'});
-      }
-    }
-  }
-
-  /* ================= SAVE DAY ================= */
-
-  async function saveDay(employeeId, day, status) {
-    await apiFetch(
-      `/api/timesheets/${timesheetId}/employee/${employeeId}/day` +
-      `?dayOfMonth=${day}&status=${status}`,
-      {method: 'POST'}
-    );
+    select.innerHTML = `<option value="">— выберите —</option>`;
+    all.filter(e => !used.includes(e.id)).forEach(e => {
+      select.innerHTML +=
+        `<option value="${e.id}">${e.lastName} ${e.firstName}</option>`;
+    });
   }
 
   /* ================= RENDER ================= */
@@ -215,102 +140,102 @@
     const table = document.getElementById('timesheetTable');
     table.innerHTML = '';
 
-    if (!timesheet?.entries) return;
-
-    const monthIndex = new Date(
-      `${timesheet.year}-${timesheet.month}-01`
-    ).getMonth();
-
-    const daysCount =
-      new Date(timesheet.year, monthIndex + 1, 0).getDate();
-
-    adaptTable(daysCount);
+    const m = new Date(`${timesheet.year}-${timesheet.month}-01`).getMonth();
+    const days = daysInMonth(timesheet.year, m);
 
     /* HEADER */
-    const head = document.createElement('tr');
-    head.innerHTML = '<th>Сотрудник</th>';
-    for (let d = 1; d <= daysCount; d++) head.innerHTML += `<th>${d}</th>`;
-    head.innerHTML += '<th>Итого</th>';
-    table.appendChild(head);
+    let tr = `<tr>
+    <th class="employee">Сотрудник</th>`;
+
+    for (let d = 1; d <= days; d++) {
+      tr += `<th class="day">${d}</th>`;
+    }
+
+    tr += `<th class="total">Итого</th></tr>`;
+    table.innerHTML += tr;
 
     /* ROWS */
     timesheet.entries.forEach(entry => {
-      entry.days ||= [];
       let total = 0;
+      let row = `<tr><td class="employee">
+      ${entry.employee.lastName} ${entry.employee.firstName}
+    </td>`;
 
-      const tr = document.createElement('tr');
-      tr.innerHTML =
-        `<td>${entry.employee.lastName} ${entry.employee.firstName}</td>`;
+      for (let d = 1; d <= days; d++) {
+        const weekend = isWeekend(timesheet.year, m, d);
+        const checked = entry.days.some(x =>
+          x.dayNumber === d && x.status === 'PRESENT'
+        );
 
-      for (let d = 1; d <= daysCount; d++) {
-        const day = entry.days.find(x => x.dayNumber === d);
-        const status = day?.status || 'DAY_OFF';
+        if (checked) total++;
 
-        if (status === 'PRESENT') total++;
-
-        const td = document.createElement('td');
-        td.className = status;
-
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.checked = status === 'PRESENT';
-
-        cb.onchange = async (e) => {
-          e.stopPropagation();
-          const newStatus = cb.checked ? 'PRESENT' : 'DAY_OFF';
-          await saveDay(entry.employee.id, d, newStatus);
-
-          entry.days = entry.days.filter(x => x.dayNumber !== d);
-          entry.days.push({dayNumber: d, status: newStatus});
-
-          renderTable();
-        };
-
-        td.appendChild(cb);
-        tr.appendChild(td);
+        row += `
+        <td class="day ${weekend ? 'weekend' : ''}">
+          <input type="checkbox"
+            ${checked ? 'checked' : ''}
+            ${weekend ? 'disabled' : ''}
+            onclick="toggleDay(event, ${entry.employee.id}, ${d})">
+        </td>`;
       }
 
-      const totalTd = document.createElement('td');
-      totalTd.textContent = total;
-      tr.appendChild(totalTd);
+      row += `<td class="total" id="total-${entry.employee.id}">
+      ${total}
+    </td></tr>`;
 
-      table.appendChild(tr);
+      table.innerHTML += row;
     });
   }
 
-  function renderEmployeeSelect() {
-    const select = document.getElementById('employeeSelect');
-    select.innerHTML = '<option value="">— выберите —</option>';
+  /* ================= ACTIONS ================= */
 
-    const used = timesheet.entries.map(e => e.employee.id);
+  function toggleDay(e, empId, day) {
+    e.preventDefault();
 
-    allEmployees
-      .filter(e => !used.includes(e.id))
-      .forEach(e => {
-        const opt = document.createElement('option');
-        opt.value = e.id;
-        opt.textContent = `${e.lastName} ${e.firstName}`;
-        select.appendChild(opt);
-      });
+    if (!changes[empId]) changes[empId] = {};
+    changes[empId][day] = e.target.checked
+      ? 'PRESENT'
+      : 'ABSENT';
+
+    recalcTotal(empId);
   }
 
-  /* ================= ADD EMPLOYEE ================= */
+  function recalcTotal(empId) {
+    const row = document.getElementById(`total-${empId}`);
+    const inputs = row.parentElement.querySelectorAll('input[type=checkbox]');
+    let total = 0;
+    inputs.forEach(i => i.checked && total++);
+    row.innerText = total;
+  }
+
+  async function saveTimesheet() {
+    for (const empId in changes) {
+      for (const day in changes[empId]) {
+        await apiFetch(
+          `${API}/${timesheetId}/employee/${empId}/day` +
+          `?dayOfMonth=${day}&status=${changes[empId][day]}`,
+          {method: 'POST'}
+        );
+      }
+    }
+    alert('Сохранено');
+    history.back();
+  }
 
   async function addEmployee() {
-    const id = document.getElementById('employeeSelect').value;
-    if (!id) return toast.error('Выберите сотрудника');
+    const id = employeeSelect.value;
+    if (!id) return;
 
     const res = await apiFetch(
-      `/api/timesheets/${timesheetId}/employee?employeeId=${id}`,
+      `${API}/${timesheetId}/employee?employeeId=${id}`,
       {method: 'POST'}
     );
 
     timesheet = await res.json();
-    await autofillWeekends();
     renderTable();
-    renderEmployeeSelect();
+    loadEmployees();
   }
 
+  /* ================= INIT ================= */
   loadTimesheet();
 </script>
 
