@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Добавить трудовой договор</title>
-  <script src="/js/auth.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +70,8 @@
 
 <!-- Toast -->
 <script src="/js/ui-toast.js"></script>
-
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Page logic -->
 <script>
   // const CONTRACTS_API = "http://localhost:8081/api/contracts";
@@ -79,7 +79,7 @@
   // const EMPLOYEES_API = "http://localhost:8081/api/employees";
   // const DEPARTMENTS_API = "http://localhost:8081/api/departments";
   // const POSITIONS_API = "http://localhost:8081/api/positions";
-  const CONTRACTS_API = '/api/contracts';
+  // const CONTRACTS_API = '/api/contracts';
   const ORGANIZATIONS_API = '/api/organizations';
   const EMPLOYEES_API = '/api/employees';
   const DEPARTMENTS_API = '/api/departments';
@@ -179,7 +179,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const res = await apiFetch(CONTRACTS_API, {
+      const res = await apiFetch('/api/contracts', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

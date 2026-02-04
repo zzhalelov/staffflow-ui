@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Добавить расчетный показатель</title>
-  <script src="/js/auth.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,10 +59,11 @@
 <div id="toast-container"></div>
 
 <script src="/js/ui-toast.js"></script>
-
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <script>
   // const API_URL = "http://localhost:8081/api/indicators";
-  const API_URL = '/api/indicators';
+  // const API_URL = '/api/indicators';
   const form = document.getElementById('indicatorForm');
 
   form.addEventListener('submit', async (e) => {
@@ -91,7 +91,7 @@
     try {
       toast.info('Отправка данных...');
 
-      const response = await apiFetch(API_URL, {
+      const response = await apiFetch('/api/indicators', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

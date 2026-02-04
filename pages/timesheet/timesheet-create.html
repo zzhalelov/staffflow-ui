@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Табель учет рабочего времени</title>
-    <script src="/js/auth.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,13 +60,14 @@
 
 <!-- Toast -->
 <script src="/js/ui-toast.js"></script>
-
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Page logic -->
 <script>
   // const TIMESHEETS_API = "http://localhost:8081/api/timesheets";
   // const ORGANIZATIONS_API = "http://localhost:8081/api/organizations";
   const ORGANIZATIONS_API = '/api/organizations';
-  const TIMESHEETS_API = '/api/timesheets';
+  // const TIMESHEETS_API = '/api/timesheets';
 
   const form = document.getElementById('timesheetForm')
   const organizationSelect = document.getElementById('organizationSelect');
@@ -133,7 +133,7 @@
       toast.info('Создание табеля...');
 
       const url =
-        `${TIMESHEETS_API}?organizationId=${organizationId}&month=${month}&year=${year}`;
+        `/api/timesheets?organizationId=${organizationId}&month=${month}&year=${year}`;
 
       const res = await apiFetch(url, {
         method: 'POST',

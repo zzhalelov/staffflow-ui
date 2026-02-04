@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Табель</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="/js/auth.js"></script>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,8 +106,10 @@
 <div id="toast-container"></div>
 <script src="/js/ui-toast.js"></script>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <script>
-  const API = '/api/timesheets';
+  // const API = '/api/timesheets';
   const EMPLOYEES_API = '/api/employees';
 
   const timesheetId =
@@ -141,7 +142,7 @@
   /* ================= LOAD ================= */
 
   async function loadTimesheet() {
-    const res = await apiFetch(`${API}/${timesheetId}`);
+    const res = await apiFetch(`/api/timesheets/${timesheetId}`);
     timesheet = await res.json();
 
     document.getElementById('title').textContent =
@@ -188,7 +189,7 @@
         if (entry.days.some(x => x.dayNumber === d)) continue;
 
         await apiFetch(
-          `${API}/${timesheetId}/employee/${entry.employee.id}/day` +
+          `/api/timesheets/${timesheetId}/employee/${entry.employee.id}/day` +
           `?dayOfMonth=${d}&status=DAY_OFF`,
           {method: 'POST'}
         );
@@ -202,7 +203,7 @@
 
   async function saveDay(employeeId, day, status) {
     await apiFetch(
-      `${API}/${timesheetId}/employee/${employeeId}/day` +
+      `/api/timesheets/${timesheetId}/employee/${employeeId}/day` +
       `?dayOfMonth=${day}&status=${status}`,
       {method: 'POST'}
     );
@@ -300,7 +301,7 @@
     if (!id) return toast.error('Выберите сотрудника');
 
     const res = await apiFetch(
-      `${API}/${timesheetId}/employee?employeeId=${id}`,
+      `/api/timesheets/${timesheetId}/employee?employeeId=${id}`,
       {method: 'POST'}
     );
 

@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Список табелей</title>
-  <script src="/js/auth.js"></script>
 
   <!-- Pixel font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,8 +78,10 @@
   </div>
 </div>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <script>
-  const API = '/api/timesheets';
+  // const API = '/api/timesheets';
   let all = [];
 
   /* ===============================
@@ -88,7 +89,7 @@
   =============================== */
   async function load() {
     try {
-      const res = await apiFetch(API);
+      const res = await apiFetch('/api/timesheets');
       if (!res.ok) throw new Error(res.status);
 
       all = await res.json();
@@ -162,7 +163,7 @@
     if (!confirm(`Удалить табель #${id}?`)) return;
 
     try {
-      await apiFetch(`${API}/${id}`, {method: 'DELETE'});
+      await apiFetch(`/api/timesheets/${id}`, {method: 'DELETE'});
       load();
     } catch {
       alert('Ошибка удаления');

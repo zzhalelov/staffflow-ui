@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Изменить статус трудового договора</title>
-  <script src="/js/auth.js"></script>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,10 +64,12 @@
 <div id="toast-container"></div>
 <script src="/js/ui-toast.js"></script>
 
+<script src="/staffflow-ui/js/api.js"></script>
+<script src="/staffflow-ui/js/auth.js"></script>
 <!-- Logic -->
 <script>
   // const CONTRACTS_API = "http://localhost:8081/api/contracts";
-  const CONTRACTS_API = '/api/contracts';
+  // const CONTRACTS_API = '/api/contracts';
 
   const params = new URLSearchParams(location.search);
   const contractId = params.get('id');
@@ -93,7 +94,7 @@
 
   async function loadContract() {
     try {
-      const res = await apiFetch(`${CONTRACTS_API}/${contractId}`);
+      const res = await apiFetch(`/api/contracts/${contractId}`);
       if (!res.ok) throw new Error(res.status);
 
       const data = await res.json();
@@ -125,7 +126,7 @@
       toast.info('Обновление статуса...');
 
       const res = await apiFetch(
-        `${CONTRACTS_API}/${contractId}/status?status=${status}`,
+        `/api/contracts/${contractId}/status?status=${status}`,
         {method: 'PATCH'}
       );
 
