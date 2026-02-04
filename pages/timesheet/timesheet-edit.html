@@ -140,29 +140,45 @@
     const table = document.getElementById('timesheetTable');
     table.innerHTML = '';
 
-    const m = new Date(`${timesheet.year}-${timesheet.month}-01`).getMonth();
-    const days = daysInMonth(timesheet.year, m);
+    const year = timesheet.year;
+    const monthIndex =
+      new Date(`${timesheet.year}-${timesheet.month}-01`).getMonth();
+    const days = daysInMonth(year, monthIndex);
 
-    /* HEADER */
-    let tr = `<tr>
-    <th class="employee">Сотрудник</th>`;
+    const weekDays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
+    /* ================= HEADER ROW 1: WEEKDAYS ================= */
+    let header1 = `<tr>
+    <th class="employee" rowspan="2">Сотрудник</th>`;
 
     for (let d = 1; d <= days; d++) {
-      tr += `<th class="day">${d}</th>`;
+      const wd = weekDays[new Date(year, monthIndex, d).getDay()];
+      header1 += `<th class="day">${wd}</th>`;
     }
 
-    tr += `<th class="total">Итого</th></tr>`;
-    table.innerHTML += tr;
+    header1 += `<th class="total" rowspan="2">Итого</th></tr>`;
+    table.innerHTML += header1;
 
-    /* ROWS */
+    /* ================= HEADER ROW 2: DAY NUMBERS ================= */
+    let header2 = `<tr>`;
+    for (let d = 1; d <= days; d++) {
+      header2 += `<th class="day">${d}</th>`;
+    }
+    header2 += `</tr>`;
+    table.innerHTML += header2;
+
+    /* ================= ROWS ================= */
     timesheet.entries.forEach(entry => {
       let total = 0;
-      let row = `<tr><td class="employee">
-      ${entry.employee.lastName} ${entry.employee.firstName}
-    </td>`;
+
+      let row = `<tr>
+      <td class="employee">
+        ${entry.employee.lastName} ${entry.employee.firstName}
+      </td>`;
 
       for (let d = 1; d <= days; d++) {
-        const weekend = isWeekend(timesheet.year, m, d);
+        const weekend = isWeekend(year, monthIndex, d);
+
         const checked = entry.days.some(x =>
           x.dayNumber === d && x.status === 'PRESENT'
         );
@@ -174,7 +190,7 @@
           <input type="checkbox"
             ${checked ? 'checked' : ''}
             ${weekend ? 'disabled' : ''}
-            onclick="toggleDay(event, ${entry.employee.id}, ${d})">
+            onchange="toggleDay(this, ${entry.employee.id}, ${d})">
         </td>`;
       }
 
@@ -188,11 +204,10 @@
 
   /* ================= ACTIONS ================= */
 
-  function toggleDay(e, empId, day) {
-    e.preventDefault();
-
+  function toggleDay(checkbox, empId, day) {
     if (!changes[empId]) changes[empId] = {};
-    changes[empId][day] = e.target.checked
+
+    changes[empId][day] = checkbox.checked
       ? 'PRESENT'
       : 'ABSENT';
 
