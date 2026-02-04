@@ -67,7 +67,7 @@
       background: #d0d0d0;
     }
 
-    td.WORK {
+    td.PRESENT {
       background: #c8e6c9;
     }
   </style>
@@ -246,18 +246,18 @@
         const day = entry.days.find(x => x.dayNumber === d);
         const status = day?.status || 'DAY_OFF';
 
-        if (status === 'WORK') total++;
+        if (status === 'PRESENT') total++;
 
         const td = document.createElement('td');
         td.className = status;
 
         const cb = document.createElement('input');
         cb.type = 'checkbox';
-        cb.checked = status === 'WORK';
+        cb.checked = status === 'PRESENT';
 
         cb.onchange = async (e) => {
           e.stopPropagation();
-          const newStatus = cb.checked ? 'WORK' : 'DAY_OFF';
+          const newStatus = cb.checked ? 'PRESENT' : 'DAY_OFF';
           await saveDay(entry.employee.id, d, newStatus);
 
           entry.days = entry.days.filter(x => x.dayNumber !== d);
