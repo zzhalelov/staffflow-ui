@@ -26,14 +26,24 @@ window.apiFetch = async function (path, options = {}) {
       url: `${API_BASE_URL}${path}`,
       status: response.status,
       contentType,
-      response,
     });
   }
 
-  if (response.status === 401 || response.status === 403) {
+  // не авторизован (токен отсутствует или истек)
+  if (response.status === 401) {
     localStorage.removeItem('token');
     window.location.replace('/login.html');
-    throw new Error('Unauthorized');
+    throw new Error('UNAUTHORIZED');
+  }
+
+  // недостаточно прав
+  if (response.status === 403) {
+    if (window.ForbiddenModal) {
+      ForbiddenModal.open();
+    } else {
+      alert('Недостаточно прав');
+    }
+    throw new Error('FORBIDDEN');
   }
 
   return response;

@@ -37,5 +37,30 @@
   </div>
 
 </div>
+<!-- FORBIDDEN OVERLAY -->
+<div id="forbidden-overlay" class="ui-overlay hidden"></div>
+
+<!-- FORBIDDEN MODAL -->
+<div id="forbidden-modal" class="modal-window hidden">
+
+  <div class="window-titlebar">
+    <div class="window-title">
+      <img src="/icons/lock.png" width="16">
+      <span>Доступ запрещён</span>
+    </div>
+    <button class="window-button close" onclick="ForbiddenModal.close()">×</button>
+  </div>
+
+  <div class="window-content">
+    <p style="font-size:12px">
+      У вас недостаточно прав для доступа к этой странице.
+    </p>
+
+    <div style="margin-top:16px; text-align:right">
+      <button onclick="ForbiddenModal.close()">OK</button>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>
